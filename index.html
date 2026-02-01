@@ -1,47 +1,234 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Kal Editor (local/GitHub Pages)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kal – One-file Genially Widget</title>
   <style>
-    html,body{height:100%;margin:0;background:#0b0b14;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:980px;margin:0 auto;padding:14px;display:grid;grid-template-columns:360px 1fr;gap:14px}
-    @media(max-width:900px){.wrap{grid-template-columns:1fr}}
-    .panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px}
-    h2{margin:0 0 10px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .badge{font-size:12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 8px;opacity:.85;white-space:nowrap}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-    .row.one{grid-template-columns:1fr}
-    label{display:block;font-size:12px;opacity:.75;margin:0 0 6px}
-    .ctrl{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px}
-    input[type=color]{width:42px;height:34px;border:0;background:transparent;padding:0}
-    input[type=range]{width:100%}
-    input[type=number],select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;padding:9px 10px;outline:none}
-    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{cursor:pointer;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;font-weight:800;padding:10px 12px}
-    button.primary{border-color:rgba(120,90,255,.55);background:rgba(120,90,255,.22)}
-    .hint{font-size:12px;opacity:.7;line-height:1.35;margin-top:10px}
-    .preview{display:flex;align-items:center;justify-content:center;min-height:420px}
-    iframe{border:0;background:transparent;border-radius:18px}
-    textarea{width:100%;height:320px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:#fff;padding:12px;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.35}
+    html,body{height:100%;margin:0;background:transparent!important}
   </style>
 </head>
 <body>
+  <iframe
+    style="width:100%;height:720px;border:0;background:transparent;"
+    width="100%" height="720"
+    allow="clipboard-read; clipboard-write"
+    allowtransparency="true"
+    srcdoc='<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kal Editor</title>
+  <style>
+    :root{
+      --ui-bg: rgba(10,10,20,0.55);
+      --ui-border: rgba(255,255,255,0.12);
+      --ui-text: rgba(255,255,255,0.92);
+      --ui-muted: rgba(255,255,255,0.62);
+      --ui-accent: rgba(120, 90, 255, 0.95);
+    }
+
+    html, body { height:100%; }
+    body{
+      margin:0;
+      background: transparent !important;
+      color: var(--ui-text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    .wrap{
+      display:grid;
+      grid-template-columns: minmax(280px, 360px) minmax(280px, 1fr);
+      gap: 14px;
+      padding: 14px;
+      box-sizing: border-box;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    @media (max-width: 860px){ .wrap{ grid-template-columns: 1fr; } }
+
+    .panel{
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-border);
+      border-radius: 18px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    }
+
+    .panel h2{
+      margin: 0 0 10px;
+      font-size: 14px;
+      letter-spacing: .2px;
+      font-weight: 800;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .badge{
+      font-size: 12px;
+      color: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 4px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .row.one{ grid-template-columns: 1fr; }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--ui-muted);
+      margin: 0 0 6px;
+    }
+
+    .ctrl{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    input[type="color"]{
+      width: 42px;
+      height: 34px;
+      border: none;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]{
+      width: 100%;
+      accent-color: var(--ui-accent);
+    }
+    select, input[type="text"], input[type="number"]{
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--ui-text);
+      border-radius: 12px;
+      padding: 9px 10px;
+      outline: none;
+    }
+
+    .btns{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .btn{
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.92);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+      transition: transform .08s ease, background .2s ease;
+      user-select: none;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.12); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: rgba(120,90,255,0.45);
+      background: rgba(120,90,255,0.22);
+    }
+
+    .hint{
+      font-size: 12px;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.35;
+      margin-top: 10px;
+    }
+
+    .preview{
+      display:flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      min-height: 420px;
+      background: transparent;
+      border-radius: 18px;
+    }
+    .prev-frame{
+      width: 360px;
+      height: 520px;
+      border: 0;
+      background: transparent;
+      border-radius: 18px;
+    }
+
+    textarea{
+      width:100%;
+      height: 280px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.92);
+      padding: 12px;
+      box-sizing: border-box;
+      resize: vertical;
+      outline: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: pre;
+    }
+
+    .ok{
+      display:none;
+      margin-top:10px;
+      font-size:12px;
+      color: rgba(210,255,210,0.9);
+    }
+  </style>
+</head>
+
+<body>
   <div class="wrap">
     <div class="panel">
-      <h2><span>Kal Editor</span><span class="badge">onegavakota-cmyk / Kal</span></h2>
+      <h2>
+        <span>Редактор калькулятора</span>
+        <span class="badge">onegavakota-cmyk / Kal</span>
+      </h2>
+
+      <div class="row one">
+        <div>
+          <label>Язык интерфейса редактора</label>
+          <div class="ctrl">
+            <select id="lang">
+              <option value="ru" selected>Русский</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div>
-          <label>Frame</label>
+          <label id="l_frame">Корпус / рамка</label>
           <div class="ctrl">
             <input type="color" id="cFrame" value="#7b4dff"/>
             <input type="range" id="aFrame" min="0" max="100" value="16"/>
           </div>
         </div>
         <div>
-          <label>Frame border</label>
+          <label id="l_frameBorder">Обводка корпуса</label>
           <div class="ctrl">
             <input type="color" id="cFrameBorder" value="#ffffff"/>
             <input type="range" id="aFrameBorder" min="0" max="100" value="14"/>
@@ -51,14 +238,14 @@
 
       <div class="row">
         <div>
-          <label>Display bg</label>
+          <label id="l_dispBg">Экран (фон)</label>
           <div class="ctrl">
             <input type="color" id="cDispBg" value="#140a2d"/>
             <input type="range" id="aDispBg" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Display text</label>
+          <label id="l_dispText">Экран (текст)</label>
           <div class="ctrl">
             <input type="color" id="cDispText" value="#ede7ff"/>
             <input type="range" id="aDispText" min="0" max="100" value="100"/>
@@ -68,14 +255,14 @@
 
       <div class="row">
         <div>
-          <label>Keys bg</label>
+          <label id="l_keyBg">Кнопки (фон)</label>
           <div class="ctrl">
             <input type="color" id="cKeyBg" value="#19143c"/>
             <input type="range" id="aKeyBg" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Keys text</label>
+          <label id="l_keyText">Кнопки (текст)</label>
           <div class="ctrl">
             <input type="color" id="cKeyText" value="#ede7ff"/>
             <input type="range" id="aKeyText" min="0" max="100" value="100"/>
@@ -85,14 +272,14 @@
 
       <div class="row">
         <div>
-          <label>Operators bg</label>
+          <label id="l_opBg">Операторы (фон)</label>
           <div class="ctrl">
             <input type="color" id="cOpBg" value="#1e1455"/>
             <input type="range" id="aOpBg" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Equals bg</label>
+          <label id="l_eqBg">Равно (фон)</label>
           <div class="ctrl">
             <input type="color" id="cEqBg" value="#ffdc5a"/>
             <input type="range" id="aEqBg" min="0" max="100" value="40"/>
@@ -100,9 +287,26 @@
         </div>
       </div>
 
+      <div class="row">
+        <div>
+          <label id="l_acBg">AC (фон)</label>
+          <div class="ctrl">
+            <input type="color" id="cAcBg" value="#ff5a50"/>
+            <input type="range" id="aAcBg" min="0" max="100" value="35"/>
+          </div>
+        </div>
+        <div>
+          <label id="l_round">Скругление</label>
+          <div class="ctrl">
+            <input type="number" id="radius" min="8" max="34" value="22"/>
+            <input type="number" id="keyRadius" min="8" max="24" value="14"/>
+          </div>
+        </div>
+      </div>
+
       <div class="row one">
         <div>
-          <label>Iframe size</label>
+          <label id="l_size">Размер iframe (для Genially)</label>
           <div class="ctrl">
             <input type="number" id="w" min="240" max="1200" value="360"/>
             <input type="number" id="h" min="280" max="1400" value="520"/>
@@ -111,81 +315,141 @@
       </div>
 
       <div class="btns">
-        <button class="primary" id="get">Get code</button>
-        <button id="copy">Copy</button>
+        <button class="btn primary" id="btnGen">Получить код</button>
+        <button class="btn" id="btnCopy">Скопировать</button>
+        <button class="btn" id="btnReset">Сброс</button>
       </div>
 
-      <div class="hint">Редактор запускай в браузере/на GitHub Pages. В Genially вставляй только iframe из поля ниже.</div>
+      <div class="hint" id="hint">
+        Генерируется iframe-код (самодостаточный, с прозрачным фоном). Вставь его в Genially.
+      </div>
 
       <div style="margin-top:12px">
-        <label>Generated iframe</label>
+        <label id="l_out">Код для вставки</label>
         <textarea id="out" spellcheck="false"></textarea>
+        <div class="ok" id="ok">Скопировано ✅</div>
       </div>
     </div>
 
     <div class="panel">
-      <h2><span>Preview (iframe)</span><span class="badge">transparent</span></h2>
+      <h2>
+        <span id="p_title">Предпросмотр</span>
+        <span class="badge" id="p_kbd">Клавиатура: 0–9, + - * /, Enter, Backspace, Esc</span>
+      </h2>
+
       <div class="preview">
-        <iframe id="prev" width="360" height="520"></iframe>
+        <iframe id="prev" class="prev-frame" allowtransparency="true"></iframe>
+      </div>
+      <div class="hint" id="p_hint">
+        Предпросмотр — это тот же iframe, который ты вставишь в Genially.
       </div>
     </div>
   </div>
 
 <script>
 (function(){
-  const els = {
-    cFrame: q("#cFrame"), aFrame: q("#aFrame"),
-    cFrameBorder: q("#cFrameBorder"), aFrameBorder: q("#aFrameBorder"),
-    cDispBg: q("#cDispBg"), aDispBg: q("#aDispBg"),
-    cDispText: q("#cDispText"), aDispText: q("#aDispText"),
-    cKeyBg: q("#cKeyBg"), aKeyBg: q("#aKeyBg"),
-    cKeyText: q("#cKeyText"), aKeyText: q("#aKeyText"),
-    cOpBg: q("#cOpBg"), aOpBg: q("#aOpBg"),
-    cEqBg: q("#cEqBg"), aEqBg: q("#aEqBg"),
-    w: q("#w"), h: q("#h"),
-    prev: q("#prev"), out: q("#out"),
-    get: q("#get"), copy: q("#copy"),
+  const I18N = {
+    ru: {
+      frame:"Корпус / рамка", frameBorder:"Обводка корпуса",
+      dispBg:"Экран (фон)", dispText:"Экран (текст)",
+      keyBg:"Кнопки (фон)", keyText:"Кнопки (текст)",
+      opBg:"Операторы (фон)", eqBg:"Равно (фон)",
+      acBg:"AC (фон)", round:"Скругление",
+      size:"Размер iframe (для Genially)", out:"Код для вставки",
+      pTitle:"Предпросмотр", pKbd:"Клавиатура: 0–9, + - * /, Enter, Backspace, Esc",
+      hint:"Генерируется iframe-код (самодостаточный, с прозрачным фоном). Вставь его в Genially.",
+      pHint:"Предпросмотр — это тот же iframe, который ты вставишь в Genially.",
+      gen:"Получить код", copy:"Скопировать", reset:"Сброс",
+      copied:"Скопировано ✅"
+    },
+    en: {
+      frame:"Frame", frameBorder:"Frame border",
+      dispBg:"Display (bg)", dispText:"Display (text)",
+      keyBg:"Keys (bg)", keyText:"Keys (text)",
+      opBg:"Operators (bg)", eqBg:"Equals (bg)",
+      acBg:"AC (bg)", round:"Rounding",
+      size:"Iframe size (for Genially)", out:"Embed code",
+      pTitle:"Preview", pKbd:"Keyboard: 0–9, + - * /, Enter, Backspace, Esc",
+      hint:"Generates an iframe snippet (self-contained, transparent background). Paste into Genially.",
+      pHint:"Preview is the same iframe you will embed into Genially.",
+      gen:"Get code", copy:"Copy", reset:"Reset",
+      copied:"Copied ✅"
+    }
   };
-  function q(s){ return document.querySelector(s); }
-  function rgba(hex,a){
-    const h=hex.replace("#","").trim();
-    const f=h.length===3?h.split("").map(x=>x+x).join(""):h;
-    const r=parseInt(f.slice(0,2),16), g=parseInt(f.slice(2,4),16), b=parseInt(f.slice(4,6),16);
-    return `rgba(${r},${g},${b},${a})`;
+
+  const $ = (id)=>document.getElementById(id);
+
+  const els = {
+    lang: $("lang"),
+    cFrame:$("cFrame"), aFrame:$("aFrame"),
+    cFrameBorder:$("cFrameBorder"), aFrameBorder:$("aFrameBorder"),
+    cDispBg:$("cDispBg"), aDispBg:$("aDispBg"),
+    cDispText:$("cDispText"), aDispText:$("aDispText"),
+    cKeyBg:$("cKeyBg"), aKeyBg:$("aKeyBg"),
+    cKeyText:$("cKeyText"), aKeyText:$("aKeyText"),
+    cOpBg:$("cOpBg"), aOpBg:$("aOpBg"),
+    cEqBg:$("cEqBg"), aEqBg:$("aEqBg"),
+    cAcBg:$("cAcBg"), aAcBg:$("aAcBg"),
+    radius:$("radius"), keyRadius:$("keyRadius"),
+    w:$("w"), h:$("h"),
+    prev:$("prev"),
+    out:$("out"),
+    ok:$("ok"),
+    btnGen:$("btnGen"),
+    btnCopy:$("btnCopy"),
+    btnReset:$("btnReset"),
+  };
+
+  function rgba(hex, a01){
+    const h = hex.replace("#","").trim();
+    const full = h.length===3 ? h.split("").map(x=>x+x).join("") : h;
+    const r = parseInt(full.slice(0,2),16);
+    const g = parseInt(full.slice(2,4),16);
+    const b = parseInt(full.slice(4,6),16);
+    return `rgba(${r},${g},${b},${a01})`;
   }
+  function n(v, def){
+    const x = Number(v);
+    return Number.isFinite(x) ? x : def;
+  }
+  function hex(v){ return String(v||"").replace("#",""); }
+
   function cfg(){
     return {
-      frame: rgba(els.cFrame.value, els.aFrame.value/100),
-      frameBorder: rgba(els.cFrameBorder.value, els.aFrameBorder.value/100),
-      displayBg: rgba(els.cDispBg.value, els.aDispBg.value/100),
-      displayText: rgba(els.cDispText.value, els.aDispText.value/100),
-      keyBg: rgba(els.cKeyBg.value, els.aKeyBg.value/100),
-      keyText: rgba(els.cKeyText.value, els.aKeyText.value/100),
-      opBg: rgba(els.cOpBg.value, els.aOpBg.value/100),
-      opText: rgba(els.cKeyText.value, els.aKeyText.value/100),
-      eqBg: rgba(els.cEqBg.value, els.aEqBg.value/100),
+      frame: rgba(els.cFrame.value, n(els.aFrame.value,16)/100),
+      frameBorder: rgba(els.cFrameBorder.value, n(els.aFrameBorder.value,14)/100),
+      dispBg: rgba(els.cDispBg.value, n(els.aDispBg.value,55)/100),
+      dispText: rgba(els.cDispText.value, n(els.aDispText.value,100)/100),
+      keyBg: rgba(els.cKeyBg.value, n(els.aKeyBg.value,55)/100),
+      keyText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
+      opBg: rgba(els.cOpBg.value, n(els.aOpBg.value,55)/100),
+      opText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
+      eqBg: rgba(els.cEqBg.value, n(els.aEqBg.value,40)/100),
       eqText: "#1C1400",
-      radius: "22px",
-      keyRadius: "14px",
+      acBg: rgba(els.cAcBg.value, n(els.aAcBg.value,35)/100),
+      acText: "#FFF2F0",
+      radius: n(els.radius.value,22),
+      keyRadius: n(els.keyRadius.value,14),
     };
   }
-  function escAttr(s){
-    return String(s).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-  }
-  function srcdoc(c){
+
+  // Calculator page as srcdoc (used for preview + generated iframe)
+  function calcSrcdoc(c){
+    // keep it compact, but readable
     return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 html,body{height:100%;margin:0;background:transparent!important;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 :root{
 --kal-frame:${c.frame};--kal-frame-border:${c.frameBorder};
---kal-display-bg:${c.displayBg};--kal-display-text:${c.displayText};
+--kal-display-bg:${c.dispBg};--kal-display-text:${c.dispText};
 --kal-key-bg:${c.keyBg};--kal-key-text:${c.keyText};
 --kal-op-bg:${c.opBg};--kal-op-text:${c.opText};
+--kal-ac-bg:${c.acBg};--kal-ac-text:${c.acText};
 --kal-eq-bg:${c.eqBg};--kal-eq-text:${c.eqText};
---kal-radius:${c.radius};--kal-key-radius:${c.keyRadius};
+--kal-radius:${c.radius}px;--kal-key-radius:${c.keyRadius}px;
 }
 .kal{background:transparent;border-radius:var(--kal-radius);padding:16px;width:320px;box-sizing:border-box;position:relative}
-.kal::before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
+.kal:before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
 background:radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,.35), transparent 55%),
 radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,.28), transparent 55%),
 radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);z-index:-2}
@@ -193,123 +457,218 @@ radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);
 box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 18px 60px rgba(0,0,0,.35),0 0 24px rgba(190,90,255,.22);
 backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.display{background:var(--kal-display-bg);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px}
+.display{background:var(--kal-display-bg);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px;overflow:hidden}
 .hist{font-size:12px;color:rgba(237,231,255,.65);min-height:16px;text-align:right;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .val{font-size:32px;font-weight:800;color:var(--kal-display-text);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.btn{border:1px solid rgba(255,255,255,.14);background:var(--kal-key-bg);color:var(--kal-key-text);
-border-radius:var(--kal-key-radius);padding:14px 0;font-weight:800;font-size:16px;cursor:pointer}
+.btn{border:1px solid rgba(255,255,255,.14);background:var(--kal-key-bg);color:var(--kal-key-text);border-radius:var(--kal-key-radius);
+padding:14px 0;font-weight:800;font-size:16px;cursor:pointer;user-select:none;outline:none}
+.btn:active{transform:translateY(1px);filter:brightness(1.05)}
 .btn.op{background:var(--kal-op-bg);color:var(--kal-op-text)}
-.btn.eq{background:var(--kal-eq-bg);color:var(--kal-eq-text);grid-row:span 2;display:flex;align-items:center;justify-content:center}
+.btn.ac{background:var(--kal-ac-bg);color:var(--kal-ac-text)}
+.btn.eq{background:var(--kal-eq-bg);color:var(--kal-eq-text);grid-row:span 2;display:flex;align-items:center;justify-content:center;padding:0;font-size:18px}
 .btn.zero{grid-column:span 2}
 </style></head><body>
 <div class="kal"><div class="shell" id="sh" tabindex="0"></div></div>
 <script>
 (function(){
 function pretty(op){return op==="/"?"÷":op==="*"?"×":op==="-"?"−":op;}
-function fmt(n){var s=String(n); if(s.indexOf("e")>=0||s.indexOf("E")>=0) return s; return String(Number(n.toFixed(12)));}
+function fmt(n){var s=String(n);if(s.indexOf("e")>=0||s.indexOf("E")>=0)return s;return String(Number(n.toFixed(12)));}
 function comp(a,op,b){if(op==="+")return a+b;if(op==="-")return a-b;if(op==="*")return a*b;if(op==="/")return b===0?NaN:a/b;return b;}
 var sh=document.getElementById("sh");
-var top=document.createElement("div"); top.className="top";
-var disp=document.createElement("div"); disp.className="display";
-var hist=document.createElement("div"); hist.className="hist";
-var val=document.createElement("div"); val.className="val"; val.textContent="0";
-disp.appendChild(hist); disp.appendChild(val); top.appendChild(disp);
-var grid=document.createElement("div"); grid.className="grid";
+var top=document.createElement("div");top.className="top";
+var disp=document.createElement("div");disp.className="display";
+var hist=document.createElement("div");hist.className="hist";
+var val=document.createElement("div");val.className="val";val.textContent="0";
+disp.appendChild(hist);disp.appendChild(val);top.appendChild(disp);
+var grid=document.createElement("div");grid.className="grid";
 var btns=[
-{t:"AC",k:"AC",c:"op"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
+{t:"AC",k:"AC",c:"ac"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
 {t:"7",k:"7"},{t:"8",k:"8"},{t:"9",k:"9"},{t:"×",k:"*",c:"op"},
 {t:"4",k:"4"},{t:"5",k:"5"},{t:"6",k:"6"},{t:"−",k:"-",c:"op"},
 {t:"1",k:"1"},{t:"2",k:"2"},{t:"3",k:"3"},{t:"=",k:"=",c:"eq"},
 {t:"0",k:"0",c:"zero"},{t:".",k:"."},{t:"⌫",k:"BKSP",c:"op"},{t:"+",k:"+",c:"op"}
 ];
-var dv="0", fv=null, op=null, wait=false, lastB=null, lastOp=null, h="";
-function upd(){val.textContent=dv; hist.textContent=h;}
-function digit(d){ if(wait){dv=d;wait=false;} else dv=(dv==="0")?d:dv+d; upd();}
-function dot(){ if(wait){dv="0.";wait=false;upd();return;} if(dv.indexOf(".")===-1){dv+=".";upd();} }
+var dv="0",fv=null,op=null,wait=false,lastB=null,lastOp=null,h="";
+function upd(){val.textContent=dv;hist.textContent=h;}
+function digit(d){if(wait){dv=d;wait=false;}else dv=(dv==="0")?d:dv+d;upd();}
+function dot(){if(wait){dv="0.";wait=false;upd();return;}if(dv.indexOf(".")===-1){dv+=".";upd();}}
 function clear(){dv="0";fv=null;op=null;wait=false;lastB=null;lastOp=null;h="";upd();}
-function bk(){ if(wait) return; if(dv.length<=1 || (dv.length===2 && dv[0]==="-")) dv="0"; else dv=dv.slice(0,-1); upd();}
-function sign(){ if(dv==="0") return; dv=(dv[0]==="-")?dv.slice(1):("-"+dv); upd();}
-function pct(){ var v=parseFloat(dv); if(!isFinite(v))return; dv=fmt(v/100); upd(); }
+function bk(){if(wait)return;if(dv.length<=1||(dv.length===2&&dv[0]==="-"))dv="0";else dv=dv.slice(0,-1);upd();}
+function sign(){if(dv==="0")return;dv=(dv[0]==="-")?dv.slice(1):("-"+dv);upd();}
+function pct(){var v=parseFloat(dv);if(!isFinite(v))return;dv=fmt(v/100);upd();}
 function setOp(nop){
-  var v=parseFloat(dv); if(!isFinite(v)){dv="Error";upd();return;}
-  if(op && wait){ op=nop; h=fmt(fv)+" "+pretty(op); upd(); return; }
-  if(fv===null) fv=v;
+  var v=parseFloat(dv);if(!isFinite(v)){dv="Error";upd();return;}
+  if(op&&wait){op=nop;h=fmt(fv)+" "+pretty(op);upd();return;}
+  if(fv===null)fv=v;
   else if(op){
-    var r=comp(fv,op,v); if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
-    fv=r; dv=fmt(r);
+    var r=comp(fv,op,v);if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
+    fv=r;dv=fmt(r);
   }
-  op=nop; wait=true; lastB=null; lastOp=null; h=fmt(fv)+" "+pretty(op); upd();
+  op=nop;wait=true;lastB=null;lastOp=null;h=fmt(fv)+" "+pretty(op);upd();
 }
 function eq(){
-  var v=parseFloat(dv); if(fv===null) return;
-  if(!op && lastOp && lastB!==null){
-    var r2=comp(fv,lastOp,lastB); if(!isFinite(r2)){dv="Error";fv=null;lastOp=null;lastB=null;h="";upd();return;}
-    fv=r2; dv=fmt(r2); h=""; upd(); return;
+  var v=parseFloat(dv);if(fv===null)return;
+  if(!op&&lastOp&&lastB!==null){
+    var r2=comp(fv,lastOp,lastB);if(!isFinite(r2)){dv="Error";fv=null;lastOp=null;lastB=null;h="";upd();return;}
+    fv=r2;dv=fmt(r2);h="";upd();return;
   }
-  if(!op) return;
-  var b = wait ? (lastB!==null?lastB:fv) : v;
-  var r=comp(fv,op,b); if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
+  if(!op)return;
+  var b=wait?(lastB!==null?lastB:fv):v;
+  var r=comp(fv,op,b);if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
   h=fmt(fv)+" "+pretty(op)+" "+fmt(b)+" =";
   dv=fmt(r);
-  lastB=b; lastOp=op;
-  fv=r; op=null; wait=true; upd();
+  lastB=b;lastOp=op;
+  fv=r;op=null;wait=true;upd();
 }
 function act(k){
-  if(dv==="Error" && k!=="AC") clear();
-  if(k>="0"&&k<="9") return digit(k);
-  if(k===".") return dot();
-  if(k==="AC") return clear();
-  if(k==="BKSP") return bk();
-  if(k==="SIGN") return sign();
-  if(k==="PCT") return pct();
-  if(k==="+"||k==="-"||k==="*"||k==="/") return setOp(k);
-  if(k==="=") return eq();
+  if(dv==="Error"&&k!=="AC")clear();
+  if(k>="0"&&k<="9")return digit(k);
+  if(k===".")return dot();
+  if(k==="AC")return clear();
+  if(k==="BKSP")return bk();
+  if(k==="SIGN")return sign();
+  if(k==="PCT")return pct();
+  if(k==="+"||k==="-"||k==="*"||k==="/")return setOp(k);
+  if(k==="=")return eq();
 }
-sh.appendChild(top); sh.appendChild(grid);
-btns.forEach(b=>{
+sh.appendChild(top);sh.appendChild(grid);
+btns.forEach(function(b){
   var el=document.createElement("button");
-  el.className="btn"+(b.c?" "+b.c:"");
-  el.textContent=b.t; el.type="button";
-  el.addEventListener("click",()=>act(b.k));
+  el.className="btn"+(b.c?(" "+b.c):"");
+  el.type="button";el.textContent=b.t;
+  el.addEventListener("click",function(){act(b.k);});
   grid.appendChild(el);
 });
-sh.addEventListener("keydown",e=>{
-  var m={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
+sh.addEventListener("keydown",function(e){
+  var map={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
   if(e.key>="0"&&e.key<="9"){e.preventDefault();act(e.key);return;}
-  if(m[e.key]){e.preventDefault();act(m[e.key]);}
+  if(map[e.key]){e.preventDefault();act(map[e.key]);}
 });
-upd(); setTimeout(()=>{try{sh.focus()}catch(e){}},60);
+upd();setTimeout(function(){try{sh.focus();}catch(e){}},60);
 })();
 </script>
 </body></html>`;
   }
-  function buildIframe(){
+
+  function escAttr(s){
+    // for putting srcdoc into iframe code
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("\"","&quot;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
+  }
+
+  function refreshPreview(){
     const c = cfg();
-    const w = Math.max(240, Number(els.w.value||360));
-    const h = Math.max(280, Number(els.h.value||520));
-    const s = srcdoc(c);
-    return `<iframe style="width:${w}px;height:${h}px;border:0;background:transparent" width="${w}" height="${h}" allowtransparency="true" srcdoc="${escAttr(s)}"></iframe>`;
-  }
-  function refresh(){
-    const w = Math.max(240, Number(els.w.value||360));
-    const h = Math.max(280, Number(els.h.value||520));
-    els.prev.width = w; els.prev.height = h;
-    els.prev.style.width = w+"px"; els.prev.style.height = h+"px";
-    els.prev.srcdoc = srcdoc(cfg());
+    const w = Math.max(240, n(els.w.value,360));
+    const h = Math.max(280, n(els.h.value,520));
+    els.prev.style.width = w + "px";
+    els.prev.style.height = h + "px";
+    els.prev.width = w;
+    els.prev.height = h;
+    els.prev.srcdoc = calcSrcdoc(c);
   }
 
-  document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input", refresh));
-  els.get.addEventListener("click", ()=>{ els.out.value = buildIframe(); });
-  els.copy.addEventListener("click", async ()=>{
-    const txt = els.out.value || buildIframe();
-    els.out.value = txt;
-    try{ await navigator.clipboard.writeText(txt); alert("Copied"); }
-    catch(e){ els.out.focus(); els.out.select(); document.execCommand("copy"); alert("Copied"); }
-  });
+  function genCode(){
+    const c = cfg();
+    const w = Math.max(240, n(els.w.value,360));
+    const h = Math.max(280, n(els.h.value,520));
+    const srcdoc = escAttr(calcSrcdoc(c));
+    const code =
+`<iframe
+  style="width:${w}px;height:${h}px;border:0;background:transparent;"
+  width="${w}" height="${h}"
+  allow="clipboard-read; clipboard-write"
+  allowtransparency="true"
+  srcdoc="${srcdoc}">
+</iframe>`;
+    els.out.value = code;
+  }
 
-  refresh();
+  async function copyCode(){
+    const text = els.out.value || "";
+    els.ok.style.display = "none";
+    if(!text.trim()){ genCode(); }
+    try{
+      await navigator.clipboard.writeText(els.out.value);
+      els.ok.textContent = (I18N[els.lang.value]||I18N.ru).copied;
+      els.ok.style.display = "block";
+    }catch(e){
+      // fallback
+      els.out.focus(); els.out.select();
+      try{ document.execCommand("copy"); }catch(_){}
+      els.ok.textContent = (I18N[els.lang.value]||I18N.ru).copied;
+      els.ok.style.display = "block";
+    }
+  }
+
+  function setLang(lang){
+    const t = I18N[lang] || I18N.ru;
+    document.getElementById("l_frame").textContent = t.frame;
+    document.getElementById("l_frameBorder").textContent = t.frameBorder;
+    document.getElementById("l_dispBg").textContent = t.dispBg;
+    document.getElementById("l_dispText").textContent = t.dispText;
+    document.getElementById("l_keyBg").textContent = t.keyBg;
+    document.getElementById("l_keyText").textContent = t.keyText;
+    document.getElementById("l_opBg").textContent = t.opBg;
+    document.getElementById("l_eqBg").textContent = t.eqBg;
+    document.getElementById("l_acBg").textContent = t.acBg;
+    document.getElementById("l_round").textContent = t.round;
+    document.getElementById("l_size").textContent = t.size;
+    document.getElementById("l_out").textContent = t.out;
+    document.getElementById("p_title").textContent = t.pTitle;
+    document.getElementById("p_kbd").textContent = t.pKbd;
+    document.getElementById("hint").textContent = t.hint;
+    document.getElementById("p_hint").textContent = t.pHint;
+    els.btnGen.textContent = t.gen;
+    els.btnCopy.textContent = t.copy;
+    els.btnReset.textContent = t.reset;
+  }
+
+  function reset(){
+    els.lang.value = "ru";
+    els.cFrame.value = "#7b4dff"; els.aFrame.value = 16;
+    els.cFrameBorder.value = "#ffffff"; els.aFrameBorder.value = 14;
+    els.cDispBg.value = "#140a2d"; els.aDispBg.value = 55;
+    els.cDispText.value = "#ede7ff"; els.aDispText.value = 100;
+    els.cKeyBg.value = "#19143c"; els.aKeyBg.value = 55;
+    els.cKeyText.value = "#ede7ff"; els.aKeyText.value = 100;
+    els.cOpBg.value = "#1e1455"; els.aOpBg.value = 55;
+    els.cEqBg.value = "#ffdc5a"; els.aEqBg.value = 40;
+    els.cAcBg.value = "#ff5a50"; els.aAcBg.value = 35;
+    els.radius.value = 22;
+    els.keyRadius.value = 14;
+    els.w.value = 360;
+    els.h.value = 520;
+    els.out.value = "";
+    els.ok.style.display = "none";
+    setLang("ru");
+    refreshPreview();
+  }
+
+  // wire
+  ["cFrame","aFrame","cFrameBorder","aFrameBorder","cDispBg","aDispBg","cDispText","aDispText",
+   "cKeyBg","aKeyBg","cKeyText","aKeyText","cOpBg","aOpBg","cEqBg","aEqBg","cAcBg","aAcBg",
+   "radius","keyRadius","w","h"
+  ].forEach(id => document.getElementById(id).addEventListener("input", ()=>{
+    els.ok.style.display = "none";
+    refreshPreview();
+  }));
+
+  els.lang.addEventListener("change", ()=> setLang(els.lang.value));
+  els.btnGen.addEventListener("click", genCode);
+  els.btnCopy.addEventListener("click", copyCode);
+  els.btnReset.addEventListener("click", reset);
+
+  // init
+  setLang("ru");
+  refreshPreview();
 })();
 </script>
+</body>
+</html>'>
+  </iframe>
 </body>
 </html>
