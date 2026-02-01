@@ -3,672 +3,556 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kal – One-file Genially Widget</title>
-  <style>
-    html,body{height:100%;margin:0;background:transparent!important}
-  </style>
-</head>
-<body>
-  <iframe
-    style="width:100%;height:720px;border:0;background:transparent;"
-    width="100%" height="720"
-    allow="clipboard-read; clipboard-write"
-    allowtransparency="true"
-    srcdoc='<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kal Editor</title>
+  <title>audiopleer player</title>
+
   <style>
     :root{
-      --ui-bg: rgba(10,10,20,0.55);
-      --ui-border: rgba(255,255,255,0.12);
-      --ui-text: rgba(255,255,255,0.92);
-      --ui-muted: rgba(255,255,255,0.62);
-      --ui-accent: rgba(120, 90, 255, 0.95);
+      --p:#7c3aed;
+      --a:#f97316;
+      --t:#e8eefc;
+      --m:#a9b6d6;
+    }
+    body{margin:0;background:transparent;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    #gaudio{width:min(520px,100%);color:var(--t);background:transparent;user-select:none}
+    #gaudio .card{
+      border-radius:24px;padding:18px 18px 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(15,20,34,.38);
+      backdrop-filter:blur(10px);
+      box-shadow:0 12px 40px rgba(0,0,0,.28);
+      overflow:hidden;
+    }
+    #gaudio .top{display:flex;gap:14px;align-items:center}
+    #gaudio .ring{
+      width:112px;height:112px;border-radius:999px;position:relative;flex:0 0 auto;
+      background:conic-gradient(from 180deg, var(--p), rgba(255,255,255,.10), var(--p));
+      padding:6px;
+    }
+    #gaudio .ring::after{
+      content:"";position:absolute;inset:6px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    #gaudio .cover{
+      position:absolute;inset:14px;border-radius:999px;
+      background-size:cover;background-position:center;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+      z-index:2;
+    }
+    #gaudio .meta{min-width:0}
+    #gaudio .title{
+      font-size:14px;font-weight:800;letter-spacing:.2px;line-height:1.2;margin:0;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    #gaudio .artist{
+      margin-top:6px;font-size:12px;color:var(--m);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:16px;
     }
 
-    html, body { height:100%; }
-    body{
-      margin:0;
-      background: transparent !important;
-      color: var(--ui-text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    #gaudio .controls{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-top:14px;gap:10px;
     }
+    #gaudio .btn{
+      width:40px;height:40px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);color:var(--t);
+      display:grid;place-items:center;cursor:pointer;
+    }
+    #gaudio .btn:hover{border-color:rgba(255,255,255,.26)}
+    #gaudio .btn.primary{
+      width:54px;height:54px;border-radius:18px;
+      background:rgba(0,0,0,.22);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 12px 28px rgba(0,0,0,.20);
+    }
+    #gaudio .btn.primary .ic{transform:translateX(1px)}
+    #gaudio .btn.tog{
+      width:auto;height:40px;padding:0 12px;font-size:12px;color:var(--m);
+      gap:8px;display:flex;align-items:center;justify-content:center;
+    }
+    #gaudio .btn.tog b{color:var(--t);font-weight:800}
 
-    .wrap{
-      display:grid;
-      grid-template-columns: minmax(280px, 360px) minmax(280px, 1fr);
-      gap: 14px;
-      padding: 14px;
-      box-sizing: border-box;
-      max-width: 980px;
-      margin: 0 auto;
-    }
-    @media (max-width: 860px){ .wrap{ grid-template-columns: 1fr; } }
-
-    .panel{
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-border);
-      border-radius: 18px;
-      padding: 14px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-    }
-
-    .panel h2{
-      margin: 0 0 10px;
-      font-size: 14px;
-      letter-spacing: .2px;
-      font-weight: 800;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .badge{
-      font-size: 12px;
-      color: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 4px 8px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    .row.one{ grid-template-columns: 1fr; }
-
-    label{
-      display:block;
-      font-size: 12px;
-      color: var(--ui-muted);
-      margin: 0 0 6px;
-    }
-
-    .ctrl{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 10px;
-    }
-
-    input[type="color"]{
-      width: 42px;
-      height: 34px;
-      border: none;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-    }
-    input[type="range"]{
-      width: 100%;
-      accent-color: var(--ui-accent);
-    }
-    select, input[type="text"], input[type="number"]{
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--ui-text);
-      border-radius: 12px;
-      padding: 9px 10px;
-      outline: none;
-    }
-
-    .btns{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-    .btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight: 900;
-      font-size: 13px;
-      transition: transform .08s ease, background .2s ease;
-      user-select: none;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.12); }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      border-color: rgba(120,90,255,0.45);
-      background: rgba(120,90,255,0.22);
-    }
-
-    .hint{
-      font-size: 12px;
-      color: rgba(255,255,255,0.62);
-      line-height: 1.35;
-      margin-top: 10px;
-    }
-
-    .preview{
-      display:flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      min-height: 420px;
-      background: transparent;
-      border-radius: 18px;
-    }
-    .prev-frame{
-      width: 360px;
-      height: 520px;
-      border: 0;
-      background: transparent;
-      border-radius: 18px;
-    }
-
-    textarea{
+    #gaudio .progress{margin-top:14px}
+    #gaudio input[type="range"]{
       width:100%;
-      height: 280px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.35);
-      color: rgba(255,255,255,0.92);
-      padding: 12px;
-      box-sizing: border-box;
-      resize: vertical;
-      outline: none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      white-space: pre;
+      -webkit-appearance:none;appearance:none;
+      height:6px;border-radius:999px;
+      background:linear-gradient(90deg, var(--a) 0%, rgba(255,255,255,.14) 0%);
+      outline:none;
+    }
+    #gaudio input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;appearance:none;
+      width:14px;height:14px;border-radius:50%;
+      background:var(--a);
+      border:1px solid rgba(255,255,255,.25);
+      box-shadow:0 8px 20px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+    #gaudio .time{
+      display:flex;justify-content:space-between;
+      margin-top:8px;font-size:11px;color:var(--m);
     }
 
-    .ok{
-      display:none;
+    /* VOLUME */
+    #gaudio .volRow{
       margin-top:10px;
-      font-size:12px;
-      color: rgba(210,255,210,0.9);
+      display:flex;align-items:center;gap:10px;
+    }
+    #gaudio .volIcon{font-size:14px;color:var(--m);width:18px;text-align:center}
+    #gaudio .vol{
+      flex:1;
+    }
+
+    #gaudio .bottom{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-top:12px;
+    }
+    #gaudio .listBtn{
+      width:auto;height:38px;padding:0 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:var(--m);cursor:pointer;font-size:12px;
+    }
+    #gaudio .listBtn:hover{border-color:rgba(255,255,255,.24)}
+    #gaudio .badge{
+      font-size:10px;padding:4px 8px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);color:var(--m);
+    }
+
+    #gaudio .listPanel{
+      margin-top:12px;border-top:1px solid rgba(255,255,255,.12);
+      padding-top:12px;display:none;
+    }
+    #gaudio .listPanel.open{display:block}
+    #gaudio .listTitle{
+      font-size:12px;color:var(--m);
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+    }
+    #gaudio .track{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.16);
+      margin-bottom:8px;cursor:pointer;
+    }
+    #gaudio .track:hover{border-color:rgba(255,255,255,.22)}
+    #gaudio .track .name{
+      font-size:12px;font-weight:700;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:78%;
+    }
+    #gaudio .track.active{
+      border-color:rgba(255,255,255,.28);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);
+    }
+    #gaudio .statusLine{
+      margin-top:10px;font-size:12px;color:var(--m);
+      white-space:pre-wrap;line-height:1.35;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="panel">
-      <h2>
-        <span>Редактор калькулятора</span>
-        <span class="badge">onegavakota-cmyk / Kal</span>
-      </h2>
-
-      <div class="row one">
-        <div>
-          <label>Язык интерфейса редактора</label>
-          <div class="ctrl">
-            <select id="lang">
-              <option value="ru" selected>Русский</option>
-              <option value="en">English</option>
-            </select>
-          </div>
+  <div id="gaudio">
+    <div class="card">
+      <div class="top">
+        <div class="ring" aria-hidden="true">
+          <div class="cover" id="gaudio-cover"></div>
+        </div>
+        <div class="meta">
+          <p class="title" id="gaudio-title">—</p>
+          <div class="artist" id="gaudio-artist">Загружаю треки…</div>
         </div>
       </div>
 
-      <div class="row">
-        <div>
-          <label id="l_frame">Корпус / рамка</label>
-          <div class="ctrl">
-            <input type="color" id="cFrame" value="#7b4dff"/>
-            <input type="range" id="aFrame" min="0" max="100" value="16"/>
-          </div>
-        </div>
-        <div>
-          <label id="l_frameBorder">Обводка корпуса</label>
-          <div class="ctrl">
-            <input type="color" id="cFrameBorder" value="#ffffff"/>
-            <input type="range" id="aFrameBorder" min="0" max="100" value="14"/>
-          </div>
+      <div class="controls">
+        <button class="btn" id="gaudio-prev" title="Назад" aria-label="Назад">⏮</button>
+        <button class="btn primary" id="gaudio-play" title="Воспроизвести" aria-label="Воспроизвести">
+          <span class="ic" id="gaudio-play-ic">▶</span>
+        </button>
+        <button class="btn" id="gaudio-next" title="Вперёд" aria-label="Вперёд">⏭</button>
+        <button class="btn tog" id="gaudio-shuffle" title="Рандом: ВЫК" aria-label="shuffle">
+          🔀 <b id="gaudio-shuf-state">OFF</b>
+        </button>
+      </div>
+
+      <div class="progress">
+        <input id="gaudio-range" type="range" min="0" max="1000" value="0" />
+        <div class="time">
+          <span id="gaudio-cur">0:00</span>
+          <span id="gaudio-tot">0:00</span>
         </div>
       </div>
 
-      <div class="row">
-        <div>
-          <label id="l_dispBg">Экран (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cDispBg" value="#140a2d"/>
-            <input type="range" id="aDispBg" min="0" max="100" value="55"/>
-          </div>
-        </div>
-        <div>
-          <label id="l_dispText">Экран (текст)</label>
-          <div class="ctrl">
-            <input type="color" id="cDispText" value="#ede7ff"/>
-            <input type="range" id="aDispText" min="0" max="100" value="100"/>
-          </div>
-        </div>
+      <div class="volRow">
+        <div class="volIcon" id="gaudio-vol-ic">🔊</div>
+        <input class="vol" id="gaudio-vol" type="range" min="0" max="100" value="85" />
       </div>
 
-      <div class="row">
-        <div>
-          <label id="l_keyBg">Кнопки (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cKeyBg" value="#19143c"/>
-            <input type="range" id="aKeyBg" min="0" max="100" value="55"/>
-          </div>
-        </div>
-        <div>
-          <label id="l_keyText">Кнопки (текст)</label>
-          <div class="ctrl">
-            <input type="color" id="cKeyText" value="#ede7ff"/>
-            <input type="range" id="aKeyText" min="0" max="100" value="100"/>
-          </div>
-        </div>
+      <div class="bottom">
+        <button class="listBtn" id="gaudio-listBtn">☰ Плейлист</button>
+        <span class="badge" id="gaudio-count">0</span>
       </div>
 
-      <div class="row">
-        <div>
-          <label id="l_opBg">Операторы (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cOpBg" value="#1e1455"/>
-            <input type="range" id="aOpBg" min="0" max="100" value="55"/>
-          </div>
-        </div>
-        <div>
-          <label id="l_eqBg">Равно (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cEqBg" value="#ffdc5a"/>
-            <input type="range" id="aEqBg" min="0" max="100" value="40"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label id="l_acBg">AC (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cAcBg" value="#ff5a50"/>
-            <input type="range" id="aAcBg" min="0" max="100" value="35"/>
-          </div>
-        </div>
-        <div>
-          <label id="l_round">Скругление</label>
-          <div class="ctrl">
-            <input type="number" id="radius" min="8" max="34" value="22"/>
-            <input type="number" id="keyRadius" min="8" max="24" value="14"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="row one">
-        <div>
-          <label id="l_size">Размер iframe (для Genially)</label>
-          <div class="ctrl">
-            <input type="number" id="w" min="240" max="1200" value="360"/>
-            <input type="number" id="h" min="280" max="1400" value="520"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="btns">
-        <button class="btn primary" id="btnGen">Получить код</button>
-        <button class="btn" id="btnCopy">Скопировать</button>
-        <button class="btn" id="btnReset">Сброс</button>
-      </div>
-
-      <div class="hint" id="hint">
-        Генерируется iframe-код (самодостаточный, с прозрачным фоном). Вставь его в Genially.
-      </div>
-
-      <div style="margin-top:12px">
-        <label id="l_out">Код для вставки</label>
-        <textarea id="out" spellcheck="false"></textarea>
-        <div class="ok" id="ok">Скопировано ✅</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>
-        <span id="p_title">Предпросмотр</span>
-        <span class="badge" id="p_kbd">Клавиатура: 0–9, + - * /, Enter, Backspace, Esc</span>
-      </h2>
-
-      <div class="preview">
-        <iframe id="prev" class="prev-frame" allowtransparency="true"></iframe>
-      </div>
-      <div class="hint" id="p_hint">
-        Предпросмотр — это тот же iframe, который ты вставишь в Genially.
-      </div>
+      <div class="listPanel" id="gaudio-list"></div>
+      <div class="statusLine" id="gaudio-status"></div>
     </div>
   </div>
 
 <script>
-(function(){
-  const I18N = {
-    ru: {
-      frame:"Корпус / рамка", frameBorder:"Обводка корпуса",
-      dispBg:"Экран (фон)", dispText:"Экран (текст)",
-      keyBg:"Кнопки (фон)", keyText:"Кнопки (текст)",
-      opBg:"Операторы (фон)", eqBg:"Равно (фон)",
-      acBg:"AC (фон)", round:"Скругление",
-      size:"Размер iframe (для Genially)", out:"Код для вставки",
-      pTitle:"Предпросмотр", pKbd:"Клавиатура: 0–9, + - * /, Enter, Backspace, Esc",
-      hint:"Генерируется iframe-код (самодостаточный, с прозрачным фоном). Вставь его в Genially.",
-      pHint:"Предпросмотр — это тот же iframe, который ты вставишь в Genially.",
-      gen:"Получить код", copy:"Скопировать", reset:"Сброс",
-      copied:"Скопировано ✅"
-    },
-    en: {
-      frame:"Frame", frameBorder:"Frame border",
-      dispBg:"Display (bg)", dispText:"Display (text)",
-      keyBg:"Keys (bg)", keyText:"Keys (text)",
-      opBg:"Operators (bg)", eqBg:"Equals (bg)",
-      acBg:"AC (bg)", round:"Rounding",
-      size:"Iframe size (for Genially)", out:"Embed code",
-      pTitle:"Preview", pKbd:"Keyboard: 0–9, + - * /, Enter, Backspace, Esc",
-      hint:"Generates an iframe snippet (self-contained, transparent background). Paste into Genially.",
-      pHint:"Preview is the same iframe you will embed into Genially.",
-      gen:"Get code", copy:"Copy", reset:"Reset",
-      copied:"Copied ✅"
-    }
-  };
+(() => {
+  // ✅ repo как на скрине:
+  const GITHUB_OWNER = "onegovakota-cmyk";
+  const GITHUB_REPO  = "audiopleer";
+  const GITHUB_PATH  = "";      // треки в корне
+  const GITHUB_REF   = "main";  // если ветка другая — master
 
-  const $ = (id)=>document.getElementById(id);
+  const COVER_URL = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80&auto=format&fit=crop";
+  const MAX_TRACKS = 500;
+  const audioExt = /\.(mp3|wav|ogg|m4a|aac)$/i;
 
-  const els = {
-    lang: $("lang"),
-    cFrame:$("cFrame"), aFrame:$("aFrame"),
-    cFrameBorder:$("cFrameBorder"), aFrameBorder:$("aFrameBorder"),
-    cDispBg:$("cDispBg"), aDispBg:$("aDispBg"),
-    cDispText:$("cDispText"), aDispText:$("aDispText"),
-    cKeyBg:$("cKeyBg"), aKeyBg:$("aKeyBg"),
-    cKeyText:$("cKeyText"), aKeyText:$("aKeyText"),
-    cOpBg:$("cOpBg"), aOpBg:$("aOpBg"),
-    cEqBg:$("cEqBg"), aEqBg:$("aEqBg"),
-    cAcBg:$("cAcBg"), aAcBg:$("aAcBg"),
-    radius:$("radius"), keyRadius:$("keyRadius"),
-    w:$("w"), h:$("h"),
-    prev:$("prev"),
-    out:$("out"),
-    ok:$("ok"),
-    btnGen:$("btnGen"),
-    btnCopy:$("btnCopy"),
-    btnReset:$("btnReset"),
-  };
+  const $cover  = document.getElementById("gaudio-cover");
+  const $title  = document.getElementById("gaudio-title");
+  const $artist = document.getElementById("gaudio-artist");
+  const $status = document.getElementById("gaudio-status");
 
-  function rgba(hex, a01){
-    const h = hex.replace("#","").trim();
-    const full = h.length===3 ? h.split("").map(x=>x+x).join("") : h;
-    const r = parseInt(full.slice(0,2),16);
-    const g = parseInt(full.slice(2,4),16);
-    const b = parseInt(full.slice(4,6),16);
-    return `rgba(${r},${g},${b},${a01})`;
-  }
-  function n(v, def){
-    const x = Number(v);
-    return Number.isFinite(x) ? x : def;
-  }
-  function hex(v){ return String(v||"").replace("#",""); }
+  const $play = document.getElementById("gaudio-play");
+  const $playIc = document.getElementById("gaudio-play-ic");
+  const $prev = document.getElementById("gaudio-prev");
+  const $next = document.getElementById("gaudio-next");
+  const $shuffle = document.getElementById("gaudio-shuffle");
+  const $shufState = document.getElementById("gaudio-shuf-state");
+  const $range = document.getElementById("gaudio-range");
+  const $cur = document.getElementById("gaudio-cur");
+  const $tot = document.getElementById("gaudio-tot");
+  const $listBtn = document.getElementById("gaudio-listBtn");
+  const $list = document.getElementById("gaudio-list");
+  const $count = document.getElementById("gaudio-count");
 
-  function cfg(){
-    return {
-      frame: rgba(els.cFrame.value, n(els.aFrame.value,16)/100),
-      frameBorder: rgba(els.cFrameBorder.value, n(els.aFrameBorder.value,14)/100),
-      dispBg: rgba(els.cDispBg.value, n(els.aDispBg.value,55)/100),
-      dispText: rgba(els.cDispText.value, n(els.aDispText.value,100)/100),
-      keyBg: rgba(els.cKeyBg.value, n(els.aKeyBg.value,55)/100),
-      keyText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
-      opBg: rgba(els.cOpBg.value, n(els.aOpBg.value,55)/100),
-      opText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
-      eqBg: rgba(els.cEqBg.value, n(els.aEqBg.value,40)/100),
-      eqText: "#1C1400",
-      acBg: rgba(els.cAcBg.value, n(els.aAcBg.value,35)/100),
-      acText: "#FFF2F0",
-      radius: n(els.radius.value,22),
-      keyRadius: n(els.keyRadius.value,14),
-    };
+  const $vol = document.getElementById("gaudio-vol");
+  const $volIc = document.getElementById("gaudio-vol-ic");
+
+  $cover.style.backgroundImage = COVER_URL ? `url("${COVER_URL}")` : "none";
+
+  function fmtTime(s){
+    if(!isFinite(s) || s < 0) return "0:00";
+    const m = Math.floor(s/60);
+    const r = Math.floor(s%60);
+    return m + ":" + String(r).padStart(2,"0");
   }
 
-  // Calculator page as srcdoc (used for preview + generated iframe)
-  function calcSrcdoc(c){
-    // keep it compact, but readable
-    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-html,body{height:100%;margin:0;background:transparent!important;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-:root{
---kal-frame:${c.frame};--kal-frame-border:${c.frameBorder};
---kal-display-bg:${c.dispBg};--kal-display-text:${c.dispText};
---kal-key-bg:${c.keyBg};--kal-key-text:${c.keyText};
---kal-op-bg:${c.opBg};--kal-op-text:${c.opText};
---kal-ac-bg:${c.acBg};--kal-ac-text:${c.acText};
---kal-eq-bg:${c.eqBg};--kal-eq-text:${c.eqText};
---kal-radius:${c.radius}px;--kal-key-radius:${c.keyRadius}px;
-}
-.kal{background:transparent;border-radius:var(--kal-radius);padding:16px;width:320px;box-sizing:border-box;position:relative}
-.kal:before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
-background:radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,.35), transparent 55%),
-radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,.28), transparent 55%),
-radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);z-index:-2}
-.shell{border-radius:var(--kal-radius);background:var(--kal-frame);border:1px solid var(--kal-frame-border);padding:14px;
-box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 18px 60px rgba(0,0,0,.35),0 0 24px rgba(190,90,255,.22);
-backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.display{background:var(--kal-display-bg);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px;overflow:hidden}
-.hist{font-size:12px;color:rgba(237,231,255,.65);min-height:16px;text-align:right;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.val{font-size:32px;font-weight:800;color:var(--kal-display-text);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.btn{border:1px solid rgba(255,255,255,.14);background:var(--kal-key-bg);color:var(--kal-key-text);border-radius:var(--kal-key-radius);
-padding:14px 0;font-weight:800;font-size:16px;cursor:pointer;user-select:none;outline:none}
-.btn:active{transform:translateY(1px);filter:brightness(1.05)}
-.btn.op{background:var(--kal-op-bg);color:var(--kal-op-text)}
-.btn.ac{background:var(--kal-ac-bg);color:var(--kal-ac-text)}
-.btn.eq{background:var(--kal-eq-bg);color:var(--kal-eq-text);grid-row:span 2;display:flex;align-items:center;justify-content:center;padding:0;font-size:18px}
-.btn.zero{grid-column:span 2}
-</style></head><body>
-<div class="kal"><div class="shell" id="sh" tabindex="0"></div></div>
-<script>
-(function(){
-function pretty(op){return op==="/"?"÷":op==="*"?"×":op==="-"?"−":op;}
-function fmt(n){var s=String(n);if(s.indexOf("e")>=0||s.indexOf("E")>=0)return s;return String(Number(n.toFixed(12)));}
-function comp(a,op,b){if(op==="+")return a+b;if(op==="-")return a-b;if(op==="*")return a*b;if(op==="/")return b===0?NaN:a/b;return b;}
-var sh=document.getElementById("sh");
-var top=document.createElement("div");top.className="top";
-var disp=document.createElement("div");disp.className="display";
-var hist=document.createElement("div");hist.className="hist";
-var val=document.createElement("div");val.className="val";val.textContent="0";
-disp.appendChild(hist);disp.appendChild(val);top.appendChild(disp);
-var grid=document.createElement("div");grid.className="grid";
-var btns=[
-{t:"AC",k:"AC",c:"ac"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
-{t:"7",k:"7"},{t:"8",k:"8"},{t:"9",k:"9"},{t:"×",k:"*",c:"op"},
-{t:"4",k:"4"},{t:"5",k:"5"},{t:"6",k:"6"},{t:"−",k:"-",c:"op"},
-{t:"1",k:"1"},{t:"2",k:"2"},{t:"3",k:"3"},{t:"=",k:"=",c:"eq"},
-{t:"0",k:"0",c:"zero"},{t:".",k:"."},{t:"⌫",k:"BKSP",c:"op"},{t:"+",k:"+",c:"op"}
-];
-var dv="0",fv=null,op=null,wait=false,lastB=null,lastOp=null,h="";
-function upd(){val.textContent=dv;hist.textContent=h;}
-function digit(d){if(wait){dv=d;wait=false;}else dv=(dv==="0")?d:dv+d;upd();}
-function dot(){if(wait){dv="0.";wait=false;upd();return;}if(dv.indexOf(".")===-1){dv+=".";upd();}}
-function clear(){dv="0";fv=null;op=null;wait=false;lastB=null;lastOp=null;h="";upd();}
-function bk(){if(wait)return;if(dv.length<=1||(dv.length===2&&dv[0]==="-"))dv="0";else dv=dv.slice(0,-1);upd();}
-function sign(){if(dv==="0")return;dv=(dv[0]==="-")?dv.slice(1):("-"+dv);upd();}
-function pct(){var v=parseFloat(dv);if(!isFinite(v))return;dv=fmt(v/100);upd();}
-function setOp(nop){
-  var v=parseFloat(dv);if(!isFinite(v)){dv="Error";upd();return;}
-  if(op&&wait){op=nop;h=fmt(fv)+" "+pretty(op);upd();return;}
-  if(fv===null)fv=v;
-  else if(op){
-    var r=comp(fv,op,v);if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
-    fv=r;dv=fmt(r);
-  }
-  op=nop;wait=true;lastB=null;lastOp=null;h=fmt(fv)+" "+pretty(op);upd();
-}
-function eq(){
-  var v=parseFloat(dv);if(fv===null)return;
-  if(!op&&lastOp&&lastB!==null){
-    var r2=comp(fv,lastOp,lastB);if(!isFinite(r2)){dv="Error";fv=null;lastOp=null;lastB=null;h="";upd();return;}
-    fv=r2;dv=fmt(r2);h="";upd();return;
-  }
-  if(!op)return;
-  var b=wait?(lastB!==null?lastB:fv):v;
-  var r=comp(fv,op,b);if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
-  h=fmt(fv)+" "+pretty(op)+" "+fmt(b)+" =";
-  dv=fmt(r);
-  lastB=b;lastOp=op;
-  fv=r;op=null;wait=true;upd();
-}
-function act(k){
-  if(dv==="Error"&&k!=="AC")clear();
-  if(k>="0"&&k<="9")return digit(k);
-  if(k===".")return dot();
-  if(k==="AC")return clear();
-  if(k==="BKSP")return bk();
-  if(k==="SIGN")return sign();
-  if(k==="PCT")return pct();
-  if(k==="+"||k==="-"||k==="*"||k==="/")return setOp(k);
-  if(k==="=")return eq();
-}
-sh.appendChild(top);sh.appendChild(grid);
-btns.forEach(function(b){
-  var el=document.createElement("button");
-  el.className="btn"+(b.c?(" "+b.c):"");
-  el.type="button";el.textContent=b.t;
-  el.addEventListener("click",function(){act(b.k);});
-  grid.appendChild(el);
-});
-sh.addEventListener("keydown",function(e){
-  var map={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
-  if(e.key>="0"&&e.key<="9"){e.preventDefault();act(e.key);return;}
-  if(map[e.key]){e.preventDefault();act(map[e.key]);}
-});
-upd();setTimeout(function(){try{sh.focus();}catch(e){}},60);
-})();
-</script>
-</body></html>`;
+  function setRangeVisual(el, pct){
+    const p = Math.max(0, Math.min(100, pct));
+    el.style.background = `linear-gradient(90deg, var(--a) ${p}%, rgba(255,255,255,.14) ${p}%)`;
   }
 
-  function escAttr(s){
-    // for putting srcdoc into iframe code
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("\"","&quot;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;");
-  }
-
-  function refreshPreview(){
-    const c = cfg();
-    const w = Math.max(240, n(els.w.value,360));
-    const h = Math.max(280, n(els.h.value,520));
-    els.prev.style.width = w + "px";
-    els.prev.style.height = h + "px";
-    els.prev.width = w;
-    els.prev.height = h;
-    els.prev.srcdoc = calcSrcdoc(c);
-  }
-
-  function genCode(){
-    const c = cfg();
-    const w = Math.max(240, n(els.w.value,360));
-    const h = Math.max(280, n(els.h.value,520));
-    const srcdoc = escAttr(calcSrcdoc(c));
-    const code =
-`<iframe
-  style="width:${w}px;height:${h}px;border:0;background:transparent;"
-  width="${w}" height="${h}"
-  allow="clipboard-read; clipboard-write"
-  allowtransparency="true"
-  srcdoc="${srcdoc}">
-</iframe>`;
-    els.out.value = code;
-  }
-
-  async function copyCode(){
-    const text = els.out.value || "";
-    els.ok.style.display = "none";
-    if(!text.trim()){ genCode(); }
+  function guessNameFromUrl(url){
     try{
-      await navigator.clipboard.writeText(els.out.value);
-      els.ok.textContent = (I18N[els.lang.value]||I18N.ru).copied;
-      els.ok.style.display = "block";
+      const u = new URL(url);
+      const file = decodeURIComponent(u.pathname.split("/").pop() || "");
+      return file.replace(audioExt,"");
     }catch(e){
-      // fallback
-      els.out.focus(); els.out.select();
-      try{ document.execCommand("copy"); }catch(_){}
-      els.ok.textContent = (I18N[els.lang.value]||I18N.ru).copied;
-      els.ok.style.display = "block";
+      const file = (url.split("/").pop() || "").split("?")[0];
+      return decodeURIComponent(file).replace(audioExt,"");
     }
   }
 
-  function setLang(lang){
-    const t = I18N[lang] || I18N.ru;
-    document.getElementById("l_frame").textContent = t.frame;
-    document.getElementById("l_frameBorder").textContent = t.frameBorder;
-    document.getElementById("l_dispBg").textContent = t.dispBg;
-    document.getElementById("l_dispText").textContent = t.dispText;
-    document.getElementById("l_keyBg").textContent = t.keyBg;
-    document.getElementById("l_keyText").textContent = t.keyText;
-    document.getElementById("l_opBg").textContent = t.opBg;
-    document.getElementById("l_eqBg").textContent = t.eqBg;
-    document.getElementById("l_acBg").textContent = t.acBg;
-    document.getElementById("l_round").textContent = t.round;
-    document.getElementById("l_size").textContent = t.size;
-    document.getElementById("l_out").textContent = t.out;
-    document.getElementById("p_title").textContent = t.pTitle;
-    document.getElementById("p_kbd").textContent = t.pKbd;
-    document.getElementById("hint").textContent = t.hint;
-    document.getElementById("p_hint").textContent = t.pHint;
-    els.btnGen.textContent = t.gen;
-    els.btnCopy.textContent = t.copy;
-    els.btnReset.textContent = t.reset;
+  function contentsUrl(owner, repo, path, ref){
+    const cleanPath = (path || "").trim().replace(/^\/+|\/+$/g,"");
+    const encodedPath = cleanPath ? cleanPath.split("/").map(encodeURIComponent).join("/") : "";
+    return `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}?ref=${encodeURIComponent(ref)}`;
   }
 
-  function reset(){
-    els.lang.value = "ru";
-    els.cFrame.value = "#7b4dff"; els.aFrame.value = 16;
-    els.cFrameBorder.value = "#ffffff"; els.aFrameBorder.value = 14;
-    els.cDispBg.value = "#140a2d"; els.aDispBg.value = 55;
-    els.cDispText.value = "#ede7ff"; els.aDispText.value = 100;
-    els.cKeyBg.value = "#19143c"; els.aKeyBg.value = 55;
-    els.cKeyText.value = "#ede7ff"; els.aKeyText.value = 100;
-    els.cOpBg.value = "#1e1455"; els.aOpBg.value = 55;
-    els.cEqBg.value = "#ffdc5a"; els.aEqBg.value = 40;
-    els.cAcBg.value = "#ff5a50"; els.aAcBg.value = 35;
-    els.radius.value = 22;
-    els.keyRadius.value = 14;
-    els.w.value = 360;
-    els.h.value = 520;
-    els.out.value = "";
-    els.ok.style.display = "none";
-    setLang("ru");
-    refreshPreview();
+  async function fetchJson(url){
+    const res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
+    const txt = await res.text().catch(()=> "");
+    let data = null;
+    try { data = txt ? JSON.parse(txt) : null; } catch { data = txt; }
+    return { ok: res.ok, status: res.status, statusText: res.statusText, data, url };
   }
 
-  // wire
-  ["cFrame","aFrame","cFrameBorder","aFrameBorder","cDispBg","aDispBg","cDispText","aDispText",
-   "cKeyBg","aKeyBg","cKeyText","aKeyText","cOpBg","aOpBg","cEqBg","aEqBg","cAcBg","aAcBg",
-   "radius","keyRadius","w","h"
-  ].forEach(id => document.getElementById(id).addEventListener("input", ()=>{
-    els.ok.style.display = "none";
-    refreshPreview();
-  }));
+  async function loadTracksFromGitHub(){
+    const refsToTry = Array.from(new Set([GITHUB_REF, "main", "master"].map(s=>(s||"").trim()).filter(Boolean)));
 
-  els.lang.addEventListener("change", ()=> setLang(els.lang.value));
-  els.btnGen.addEventListener("click", genCode);
-  els.btnCopy.addEventListener("click", copyCode);
-  els.btnReset.addEventListener("click", reset);
+    async function walk(items, out){
+      for(const x of items){
+        if(out.length >= MAX_TRACKS) return;
+        if(!x) continue;
 
-  // init
-  setLang("ru");
-  refreshPreview();
+        if(x.type === "file" && audioExt.test(x.name || "")){
+          out.push({ url: x.download_url, title: (x.name || "").replace(audioExt,"") });
+        } else if(x.type === "dir" && x.url){
+          const sub = await fetchJson(x.url);
+          if(sub.ok && Array.isArray(sub.data)) await walk(sub.data, out);
+        }
+      }
+    }
+
+    let lastErr = null;
+    for(const r of refsToTry){
+      const url = contentsUrl(GITHUB_OWNER, GITHUB_REPO, GITHUB_PATH, r);
+      $status.textContent = `GitHub: ${GITHUB_OWNER}/${GITHUB_REPO}\npath: ${GITHUB_PATH || "(root)"}\nref: ${r}`;
+
+      const res = await fetchJson(url);
+      if(!res.ok){ lastErr = res; continue; }
+      if(!Array.isArray(res.data)){ lastErr = res; continue; }
+
+      const out = [];
+      await walk(res.data, out);
+      return { tracks: out, usedRef: r };
+    }
+
+    const msg = (lastErr && typeof lastErr.data === "object" && lastErr.data?.message) ? lastErr.data.message : "";
+    throw new Error(`GitHub API error: ${lastErr?.status || ""} ${lastErr?.statusText || ""}${msg ? " — " + msg : ""}`);
+  }
+
+  // ---------------- Player ----------------
+  const audio = new Audio();
+  audio.preload = "metadata";
+
+  // Громкость по умолчанию
+  function setVolUI(v01){
+    const v = Math.max(0, Math.min(1, v01));
+    audio.volume = v;
+    $vol.value = String(Math.round(v*100));
+    setRangeVisual($vol, v*100);
+    $volIc.textContent = v === 0 ? "🔇" : (v < 0.5 ? "🔉" : "🔊");
+  }
+  setVolUI(0.85);
+
+  $vol.addEventListener("input", ()=>{
+    const v = Number($vol.value)/100;
+    setVolUI(v);
+  });
+
+  audio.addEventListener("error", () => {
+    const err = audio.error;
+    const code = err?.code;
+    const msg =
+      code === 1 ? "ABORTED" :
+      code === 2 ? "NETWORK (404/доступ/не скачалось)" :
+      code === 3 ? "DECODE (кодек/битый файл)" :
+      code === 4 ? "SRC_NOT_SUPPORTED (формат/кодек)" :
+      "UNKNOWN";
+    $status.textContent = `Audio error: ${msg}\nURL: ${audio.src || "none"}`;
+  });
+
+  let tracks = [];
+  let index = 0;
+  let isShuffle = false;
+  let shuffleBag = [];
+  let isSeeking = false;
+
+  function currentTrack(){ return tracks[index] || null; }
+
+  function renderMeta(){
+    const t = currentTrack();
+    if(!t){
+      $title.textContent = "—";
+      $artist.textContent = "Нет треков";
+      $tot.textContent = "0:00";
+      return;
+    }
+    $title.textContent = t.title || guessNameFromUrl(t.url || "");
+    $artist.textContent = "";
+  }
+
+  function refreshActiveRow(){
+    Array.from($list.querySelectorAll(".track")).forEach(el=>{
+      const i = Number(el.getAttribute("data-i"));
+      el.classList.toggle("active", i===index);
+    });
+  }
+
+  function renderList(){
+    $count.textContent = String(tracks.length);
+    const rows = tracks.map((t,i)=>{
+      const name = t.title || guessNameFromUrl(t.url || "");
+      return `
+        <div class="track ${i===index ? "active":""}" data-i="${i}">
+          <div class="name" title="${name.replaceAll('"','&quot;')}">${name}</div>
+        </div>`;
+    }).join("");
+
+    $list.innerHTML = `
+      <div class="listTitle">
+        <span>Плейлист</span>
+        <span class="badge">${tracks.length}</span>
+      </div>
+      ${rows}
+    `;
+
+    Array.from($list.querySelectorAll(".track")).forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const i = Number(el.getAttribute("data-i"));
+        if(Number.isFinite(i)) loadAndPlay(i, true);
+      });
+    });
+  }
+
+  function setProgressByTime(){
+    if(!isFinite(audio.duration) || audio.duration <= 0) return;
+
+    const p = audio.currentTime / audio.duration;
+    if(!isSeeking){
+      $range.value = String(Math.round(p * 1000));
+      setRangeVisual($range, p * 100);
+    }
+    $cur.textContent = fmtTime(audio.currentTime);
+  }
+
+  function load(i){
+    if(!tracks.length) return;
+    index = (i + tracks.length) % tracks.length;
+    const t = currentTrack();
+
+    if(!/^https?:\/\//i.test(t.url || "")){
+      $status.textContent = "Ошибка: ссылка на трек должна начинаться с https://\n" + String(t.url || "");
+      return;
+    }
+
+    // Сброс UI прогресса
+    $cur.textContent = "0:00";
+    $tot.textContent = "0:00";
+    $range.value = "0";
+    setRangeVisual($range, 0);
+
+    audio.src = t.url;
+    renderMeta();
+    refreshActiveRow();
+  }
+
+  function ensureShuffleBag(){
+    const arr = [];
+    for(let i=0;i<tracks.length;i++) if(i!==index) arr.push(i);
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    shuffleBag = arr;
+  }
+
+  function nextIndex(){
+    if(!tracks.length) return 0;
+    if(isShuffle){
+      if(shuffleBag.length===0) ensureShuffleBag();
+      return shuffleBag.shift();
+    }
+    return (index+1) % tracks.length;
+  }
+
+  function prevIndex(){
+    if(!tracks.length) return 0;
+    if(isShuffle){
+      let i = Math.floor(Math.random()*tracks.length);
+      if(tracks.length>1 && i===index) i = (i+1)%tracks.length;
+      return i;
+    }
+    return (index-1+tracks.length) % tracks.length;
+  }
+
+  async function loadAndPlay(i, autoplay){
+    load(i);
+    if(autoplay){
+      try{ await audio.play(); }
+      catch(e){ $status.textContent = "play() rejected: " + (e?.name || e); }
+      syncPlayUI();
+    }
+  }
+
+  function syncPlayUI(){
+    const playing = !audio.paused;
+    $playIc.textContent = playing ? "⏸" : "▶";
+    $play.title = playing ? "Пауза" : "Воспроизвести";
+  }
+
+  // Controls
+  $play.addEventListener("click", async ()=>{
+    if(!tracks.length) return;
+    if(!audio.src) load(index);
+
+    if(audio.paused){
+      try{ await audio.play(); }
+      catch(e){ $status.textContent = "play() rejected: " + (e?.name || e); }
+    }else{
+      audio.pause();
+    }
+    syncPlayUI();
+  });
+
+  $next.addEventListener("click", ()=> loadAndPlay(nextIndex(), true));
+  $prev.addEventListener("click", ()=> loadAndPlay(prevIndex(), true));
+
+  $shuffle.addEventListener("click", ()=>{
+    isShuffle = !isShuffle;
+    $shufState.textContent = isShuffle ? "ON" : "OFF";
+    $shuffle.title = isShuffle ? "Рандом: ВКЛ" : "Рандом: ВЫКЛ";
+    shuffleBag = [];
+    if(isShuffle) ensureShuffleBag();
+  });
+
+  $listBtn.addEventListener("click", ()=> $list.classList.toggle("open"));
+
+  // Seek: чтобы бегунок не дёргался при перетаскивании
+  $range.addEventListener("pointerdown", ()=> { isSeeking = true; });
+  window.addEventListener("pointerup", ()=> { isSeeking = false; });
+
+  $range.addEventListener("input", ()=>{
+    if(!isFinite(audio.duration) || audio.duration<=0) return;
+    const p = Number($range.value)/1000;
+    setRangeVisual($range, p*100);
+    $cur.textContent = fmtTime(p * audio.duration);
+  });
+
+  $range.addEventListener("change", ()=>{
+    if(!isFinite(audio.duration) || audio.duration<=0) return;
+    const p = Number($range.value)/1000;
+    audio.currentTime = p * audio.duration;
+    setProgressByTime();
+  });
+
+  // Audio events: вот это и заставляет "бежать" прогресс и время
+  audio.addEventListener("loadedmetadata", ()=>{
+    $tot.textContent = fmtTime(audio.duration);
+    setProgressByTime();
+  });
+
+  audio.addEventListener("durationchange", ()=>{
+    if(isFinite(audio.duration) && audio.duration>0) $tot.textContent = fmtTime(audio.duration);
+  });
+
+  audio.addEventListener("timeupdate", ()=>{
+    setProgressByTime();
+  });
+
+  audio.addEventListener("ended", ()=> loadAndPlay(nextIndex(), true));
+  audio.addEventListener("play", syncPlayUI);
+  audio.addEventListener("pause", syncPlayUI);
+
+  // INIT
+  (async () => {
+    try{
+      const res = await loadTracksFromGitHub();
+      tracks = res.tracks;
+
+      if(!tracks.length){
+        $artist.textContent = "В корне репозитория нет mp3/wav/ogg/m4a/aac";
+        $status.textContent += "\nПодсказка: файлы должны быть именно в репозитории, не архивом.";
+        return;
+      }
+
+      $status.textContent = `✅ Треков: ${tracks.length}\nrepo: ${GITHUB_OWNER}/${GITHUB_REPO}\npath: (root)\nref: ${res.usedRef}`;
+      renderList();
+      load(0);
+      $artist.textContent = "";
+      setRangeVisual($range, 0);
+    }catch(e){
+      $artist.textContent = "Ошибка загрузки";
+      $status.textContent = String(e?.message || e);
+    }
+  })();
 })();
 </script>
-</body>
-</html>'>
-  </iframe>
 </body>
 </html>
