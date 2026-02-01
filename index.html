@@ -1,442 +1,47 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kal – Genially Calculator Builder</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Kal Editor (local/GitHub Pages)</title>
   <style>
-    :root{
-      /* Default (neon-ish, like reference) */
-      --kal-bg: transparent;
-      --kal-frame: rgba(130, 60, 255, 0.16);
-      --kal-frame-border: rgba(255, 255, 255, 0.14);
-
-      --kal-display-bg: rgba(20, 10, 45, 0.55);
-      --kal-display-text: #EDE7FF;
-      --kal-display-subtext: rgba(237, 231, 255, 0.65);
-
-      --kal-key-bg: rgba(25, 20, 60, 0.55);
-      --kal-key-text: #EDE7FF;
-
-      --kal-op-bg: rgba(30, 20, 85, 0.55);
-      --kal-op-text: #EDE7FF;
-
-      --kal-ac-bg: rgba(255, 90, 80, 0.35);
-      --kal-ac-text: #FFF2F0;
-
-      --kal-eq-bg: rgba(255, 220, 90, 0.40);
-      --kal-eq-text: #1C1400;
-
-      --kal-glow: rgba(190, 90, 255, 0.85);
-      --kal-glow-2: rgba(0, 210, 255, 0.75);
-      --kal-radius: 22px;
-      --kal-key-radius: 14px;
-
-      /* Editor */
-      --ui-bg: rgba(10,10,20,0.55);
-      --ui-border: rgba(255,255,255,0.12);
-      --ui-text: rgba(255,255,255,0.92);
-      --ui-muted: rgba(255,255,255,0.62);
-      --ui-accent: rgba(120, 90, 255, 0.95);
-    }
-
-    /* Transparent page – important for Genially */
-    html, body { height:100%; }
-    body{
-      margin:0;
-      background: transparent !important;
-      color: var(--ui-text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    .wrap{
-      display: grid;
-      grid-template-columns: minmax(280px, 360px) minmax(280px, 1fr);
-      gap: 14px;
-      padding: 14px;
-      box-sizing: border-box;
-      max-width: 980px;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 860px){
-      .wrap{ grid-template-columns: 1fr; }
-    }
-
-    .panel{
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-border);
-      border-radius: 18px;
-      padding: 14px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-    }
-
-    .panel h2{
-      margin: 0 0 10px;
-      font-size: 14px;
-      letter-spacing: .2px;
-      font-weight: 700;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .badge{
-      font-size: 12px;
-      color: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    .row.one { grid-template-columns: 1fr; }
-
-    label{
-      display:block;
-      font-size: 12px;
-      color: var(--ui-muted);
-      margin: 0 0 6px;
-    }
-
-    .ctrl{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 10px;
-    }
-
-    input[type="color"]{
-      width: 42px;
-      height: 34px;
-      border: none;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-    }
-    input[type="range"]{
-      width: 100%;
-      accent-color: var(--ui-accent);
-    }
-    select, input[type="text"]{
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--ui-text);
-      border-radius: 12px;
-      padding: 9px 10px;
-      outline: none;
-    }
-
-    .btns{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
-    .btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight: 700;
-      font-size: 13px;
-      transition: transform .08s ease, background .2s ease;
-      user-select: none;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.12); }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      border-color: rgba(120,90,255,0.45);
-      background: rgba(120,90,255,0.22);
-    }
-
-    .hint{
-      font-size: 12px;
-      color: rgba(255,255,255,0.62);
-      line-height: 1.35;
-      margin-top: 10px;
-    }
-
-    /* ===== Calculator ===== */
-    .preview{
-      display:flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      min-height: 420px;
-      background: transparent;
-      border-radius: 18px;
-    }
-
-    .kal{
-      background: var(--kal-bg);
-      border-radius: var(--kal-radius);
-      padding: 16px;
-      width: 320px;
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    .kal::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border-radius: calc(var(--kal-radius) + 2px);
-      background:
-        radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,0.35), transparent 55%),
-        radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,0.28), transparent 55%),
-        radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,0.18), transparent 60%);
-      filter: blur(0px);
-      z-index: -2;
-    }
-
-    .kal-shell{
-      border-radius: var(--kal-radius);
-      background: var(--kal-frame);
-      border: 1px solid var(--kal-frame-border);
-      padding: 14px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 18px 60px rgba(0,0,0,0.35),
-        0 0 24px rgba(190, 90, 255, 0.22);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-
-    .kal-top{
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .kal-display{
-      background: var(--kal-display-bg);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      padding: 12px 12px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04) inset,
-        0 0 18px rgba(190,90,255,0.12);
-      overflow:hidden;
-    }
-
-    .kal-history{
-      font-size: 12px;
-      color: var(--kal-display-subtext);
-      min-height: 16px;
-      text-align: right;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 4px;
-    }
-
-    .kal-value{
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--kal-display-text);
-      text-align: right;
-      letter-spacing: 0.2px;
-      line-height: 1.1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-shadow:
-        0 0 10px rgba(190,90,255,0.18),
-        0 0 14px rgba(0,210,255,0.10);
-    }
-
-    .kal-grid{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .kal-btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: var(--kal-key-bg);
-      color: var(--kal-key-text);
-      border-radius: var(--kal-key-radius);
-      padding: 14px 0;
-      font-weight: 800;
-      font-size: 16px;
-      cursor:pointer;
-      user-select:none;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 0 16px rgba(0,0,0,0.15);
-      transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
-      position: relative;
-      outline: none;
-    }
-
-    .kal-btn::after{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      border-radius: calc(var(--kal-key-radius) + 1px);
-      background: radial-gradient(140px 60px at 50% 0%, rgba(190,90,255,0.25), transparent 70%);
-      opacity: 0;
-      transition: opacity .2s ease;
-      pointer-events:none;
-    }
-
-    .kal-btn:hover::after{ opacity: 1; }
-    .kal-btn:active{ transform: translateY(1px); filter: brightness(1.05); }
-
-    .kal-btn.op{
-      background: var(--kal-op-bg);
-      color: var(--kal-op-text);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 0 18px rgba(0, 210, 255, 0.12);
-    }
-
-    .kal-btn.ac{
-      background: var(--kal-ac-bg);
-      color: var(--kal-ac-text);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 0 18px rgba(255, 90, 80, 0.12);
-    }
-
-    .kal-btn.eq{
-      background: var(--kal-eq-bg);
-      color: var(--kal-eq-text);
-      grid-row: span 2;
-      padding: 0;
-      display:flex;
-      align-items:center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 0 22px rgba(255, 220, 90, 0.20);
-    }
-
-    .kal-btn.zero{
-      grid-column: span 2;
-    }
-
-    /* Modal */
-    .modal-backdrop{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      z-index: 9999;
-    }
-    .modal{
-      width: min(920px, 98vw);
-      background: rgba(15,15,30,0.86);
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 18px;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.55);
-      overflow:hidden;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .modal-head{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      gap: 10px;
-    }
-    .modal-title{
-      font-size: 13px;
-      font-weight: 800;
-      color: rgba(255,255,255,0.92);
-      letter-spacing: .2px;
-    }
-    .modal-body{
-      padding: 12px;
-    }
-    textarea{
-      width:100%;
-      height: 360px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.35);
-      color: rgba(255,255,255,0.92);
-      padding: 12px;
-      box-sizing: border-box;
-      resize: vertical;
-      outline: none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      white-space: pre;
-    }
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
-      background: rgba(20,20,35,0.92);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      display:none;
-      z-index: 10000;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.45);
-    }
+    html,body{height:100%;margin:0;background:#0b0b14;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:14px;display:grid;grid-template-columns:360px 1fr;gap:14px}
+    @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+    .panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px}
+    h2{margin:0 0 10px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .badge{font-size:12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 8px;opacity:.85;white-space:nowrap}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+    .row.one{grid-template-columns:1fr}
+    label{display:block;font-size:12px;opacity:.75;margin:0 0 6px}
+    .ctrl{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px}
+    input[type=color]{width:42px;height:34px;border:0;background:transparent;padding:0}
+    input[type=range]{width:100%}
+    input[type=number],select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;padding:9px 10px;outline:none}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{cursor:pointer;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;font-weight:800;padding:10px 12px}
+    button.primary{border-color:rgba(120,90,255,.55);background:rgba(120,90,255,.22)}
+    .hint{font-size:12px;opacity:.7;line-height:1.35;margin-top:10px}
+    .preview{display:flex;align-items:center;justify-content:center;min-height:420px}
+    iframe{border:0;background:transparent;border-radius:18px}
+    textarea{width:100%;height:320px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:#fff;padding:12px;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.35}
   </style>
 </head>
-
 <body>
-  <div class="wrap" id="app">
-    <!-- Editor -->
+  <div class="wrap">
     <div class="panel">
-      <h2>
-        <span id="ui_title">Редактор калькулятора</span>
-        <span class="badge" id="ui_badge">onegavakota-cmyk / Kal</span>
-      </h2>
-
-      <div class="row one">
-        <div>
-          <label id="ui_lang_label">Язык интерфейса редактора</label>
-          <div class="ctrl">
-            <select id="langSelect" aria-label="language">
-              <option value="ru" selected>Русский</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <h2><span>Kal Editor</span><span class="badge">onegavakota-cmyk / Kal</span></h2>
 
       <div class="row">
         <div>
-          <label id="ui_frame_label">Корпус / рамка</label>
+          <label>Frame</label>
           <div class="ctrl">
             <input type="color" id="cFrame" value="#7b4dff"/>
             <input type="range" id="aFrame" min="0" max="100" value="16"/>
           </div>
         </div>
-
         <div>
-          <label id="ui_frame_border_label">Обводка корпуса</label>
+          <label>Frame border</label>
           <div class="ctrl">
             <input type="color" id="cFrameBorder" value="#ffffff"/>
             <input type="range" id="aFrameBorder" min="0" max="100" value="14"/>
@@ -446,15 +51,14 @@
 
       <div class="row">
         <div>
-          <label id="ui_display_bg_label">Экран (фон)</label>
+          <label>Display bg</label>
           <div class="ctrl">
             <input type="color" id="cDispBg" value="#140a2d"/>
             <input type="range" id="aDispBg" min="0" max="100" value="55"/>
           </div>
         </div>
-
         <div>
-          <label id="ui_display_text_label">Экран (текст)</label>
+          <label>Display text</label>
           <div class="ctrl">
             <input type="color" id="cDispText" value="#ede7ff"/>
             <input type="range" id="aDispText" min="0" max="100" value="100"/>
@@ -464,15 +68,14 @@
 
       <div class="row">
         <div>
-          <label id="ui_keys_bg_label">Кнопки (фон)</label>
+          <label>Keys bg</label>
           <div class="ctrl">
             <input type="color" id="cKeyBg" value="#19143c"/>
             <input type="range" id="aKeyBg" min="0" max="100" value="55"/>
           </div>
         </div>
-
         <div>
-          <label id="ui_keys_text_label">Кнопки (текст)</label>
+          <label>Keys text</label>
           <div class="ctrl">
             <input type="color" id="cKeyText" value="#ede7ff"/>
             <input type="range" id="aKeyText" min="0" max="100" value="100"/>
@@ -482,15 +85,14 @@
 
       <div class="row">
         <div>
-          <label id="ui_ops_bg_label">Операторы (фон)</label>
+          <label>Operators bg</label>
           <div class="ctrl">
             <input type="color" id="cOpBg" value="#1e1455"/>
             <input type="range" id="aOpBg" min="0" max="100" value="55"/>
           </div>
         </div>
-
         <div>
-          <label id="ui_eq_bg_label">Равно (фон)</label>
+          <label>Equals bg</label>
           <div class="ctrl">
             <input type="color" id="cEqBg" value="#ffdc5a"/>
             <input type="range" id="aEqBg" min="0" max="100" value="40"/>
@@ -498,1074 +100,216 @@
         </div>
       </div>
 
-      <div class="row">
-        <div>
-          <label id="ui_ac_bg_label">AC (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cAcBg" value="#ff5a50"/>
-            <input type="range" id="aAcBg" min="0" max="100" value="35"/>
-          </div>
-        </div>
-
-        <div>
-          <label id="ui_radius_label">Скругление</label>
-          <div class="ctrl">
-            <input type="range" id="rAll" min="8" max="34" value="22"/>
-            <input type="text" id="rAllText" value="22" inputmode="numeric" />
-          </div>
-        </div>
-      </div>
-
       <div class="row one">
         <div>
-          <label id="ui_glow_label">Неоновое свечение</label>
+          <label>Iframe size</label>
           <div class="ctrl">
-            <input type="color" id="cGlow" value="#be5aff"/>
-            <input type="range" id="aGlow" min="0" max="100" value="85"/>
+            <input type="number" id="w" min="240" max="1200" value="360"/>
+            <input type="number" id="h" min="280" max="1400" value="520"/>
           </div>
         </div>
       </div>
 
       <div class="btns">
-        <button class="btn primary" id="btnGetCode">Получить код</button>
-        <button class="btn" id="btnReset">Сброс</button>
+        <button class="primary" id="get">Get code</button>
+        <button id="copy">Copy</button>
       </div>
 
-      <div class="hint" id="ui_hint">
-        Код генерируется как <b>самодостаточный</b> фрагмент (HTML+CSS+JS). Его можно вставить в Genially без внешних файлов.
-        Фон калькулятора прозрачный, поэтому он красиво ложится на любой дизайн.
+      <div class="hint">Редактор запускай в браузере/на GitHub Pages. В Genially вставляй только iframe из поля ниже.</div>
+
+      <div style="margin-top:12px">
+        <label>Generated iframe</label>
+        <textarea id="out" spellcheck="false"></textarea>
       </div>
     </div>
 
-    <!-- Preview -->
     <div class="panel">
-      <h2>
-        <span id="ui_preview">Предпросмотр</span>
-        <span class="badge" id="ui_kbd">Клавиатура: 0–9, + - * /, Enter, Backspace, Esc</span>
-      </h2>
+      <h2><span>Preview (iframe)</span><span class="badge">transparent</span></h2>
       <div class="preview">
-        <div class="kal" id="kalPreviewRoot" aria-label="calculator preview"></div>
+        <iframe id="prev" width="360" height="520"></iframe>
       </div>
     </div>
   </div>
-
-  <!-- Modal with embed code -->
-  <div class="modal-backdrop" id="modal">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Embed code">
-      <div class="modal-head">
-        <div class="modal-title" id="ui_modal_title">Код для вставки в Genially</div>
-        <div class="btns" style="margin:0">
-          <button class="btn primary" id="btnCopy">Копировать</button>
-          <button class="btn" id="btnClose">Закрыть</button>
-        </div>
-      </div>
-      <div class="modal-body">
-        <textarea id="codeArea" spellcheck="false"></textarea>
-        <div class="hint" id="ui_modal_hint" style="margin-top:10px">
-          Вставь этот код в Genially как HTML. Он уже включает стили и скрипт. Никаких внешних подключений не нужно.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">Скопировано</div>
-
-  <script>
-    (function(){
-      // ---------- i18n (editor UI only) ----------
-      const I18N = {
-        ru: {
-          title: "Редактор калькулятора",
-          lang: "Язык интерфейса редактора",
-          frame: "Корпус / рамка",
-          frameBorder: "Обводка корпуса",
-          dispBg: "Экран (фон)",
-          dispText: "Экран (текст)",
-          keysBg: "Кнопки (фон)",
-          keysText: "Кнопки (текст)",
-          opsBg: "Операторы (фон)",
-          eqBg: "Равно (фон)",
-          acBg: "AC (фон)",
-          radius: "Скругление",
-          glow: "Неоновое свечение",
-          getCode: "Получить код",
-          reset: "Сброс",
-          preview: "Предпросмотр",
-          kbd: "Клавиатура: 0–9, + - * /, Enter, Backspace, Esc",
-          hint: "Код генерируется как <b>самодостаточный</b> фрагмент (HTML+CSS+JS). Его можно вставить в Genially без внешних файлов. Фон калькулятора прозрачный, поэтому он красиво ложится на любой дизайн.",
-          modalTitle: "Код для вставки в Genially",
-          modalHint: "Вставь этот код в Genially как HTML. Он уже включает стили и скрипт. Никаких внешних подключений не нужно.",
-          copy: "Копировать",
-          close: "Закрыть",
-          copied: "Скопировано"
-        },
-        en: {
-          title: "Calculator Editor",
-          lang: "Editor language",
-          frame: "Frame / body",
-          frameBorder: "Frame border",
-          dispBg: "Display (background)",
-          dispText: "Display (text)",
-          keysBg: "Keys (background)",
-          keysText: "Keys (text)",
-          opsBg: "Operators (background)",
-          eqBg: "Equals (background)",
-          acBg: "AC (background)",
-          radius: "Corner radius",
-          glow: "Neon glow",
-          getCode: "Get embed code",
-          reset: "Reset",
-          preview: "Preview",
-          kbd: "Keyboard: 0–9, + - * /, Enter, Backspace, Esc",
-          hint: "The generator outputs a <b>self-contained</b> snippet (HTML+CSS+JS). Paste it into Genially without external files. The calculator background is transparent.",
-          modalTitle: "Embed code for Genially",
-          modalHint: "Paste this into Genially as HTML. It already contains styles and script. No external dependencies.",
-          copy: "Copy",
-          close: "Close",
-          copied: "Copied"
-        }
-      };
-
-      function rgba(hex, alpha01){
-        const h = hex.replace('#','').trim();
-        const full = h.length === 3 ? h.split('').map(x=>x+x).join('') : h;
-        const r = parseInt(full.slice(0,2),16);
-        const g = parseInt(full.slice(2,4),16);
-        const b = parseInt(full.slice(4,6),16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha01})`;
-      }
-
-      // ---------- Calculator engine (safe, no eval) ----------
-      // We keep a classic immediate-execution calculator UX:
-      // input -> choose operator -> input -> equals, with chaining.
-      function createCalculator(mountEl, config){
-        mountEl.innerHTML = "";
-
-        const shell = document.createElement("div");
-        shell.className = "kal-shell";
-        shell.tabIndex = 0; // keyboard focus
-        shell.setAttribute("role", "application");
-        shell.setAttribute("aria-label", "calculator");
-
-        const top = document.createElement("div");
-        top.className = "kal-top";
-
-        const display = document.createElement("div");
-        display.className = "kal-display";
-
-        const historyEl = document.createElement("div");
-        historyEl.className = "kal-history";
-        historyEl.textContent = "";
-
-        const valueEl = document.createElement("div");
-        valueEl.className = "kal-value";
-        valueEl.textContent = "0";
-
-        display.appendChild(historyEl);
-        display.appendChild(valueEl);
-
-        top.appendChild(display);
-
-        const grid = document.createElement("div");
-        grid.className = "kal-grid";
-
-        const btns = [
-          {t:"AC", a:"ac", k:"AC"},
-          {t:"±", a:"op", k:"SIGN"},
-          {t:"%", a:"op", k:"PCT"},
-          {t:"÷", a:"op", k:"/"},
-          {t:"7", a:"", k:"7"},
-          {t:"8", a:"", k:"8"},
-          {t:"9", a:"", k:"9"},
-          {t:"×", a:"op", k:"*"},
-          {t:"4", a:"", k:"4"},
-          {t:"5", a:"", k:"5"},
-          {t:"6", a:"", k:"6"},
-          {t:"−", a:"op", k:"-"},
-          {t:"1", a:"", k:"1"},
-          {t:"2", a:"", k:"2"},
-          {t:"3", a:"", k:"3"},
-          {t:"=", a:"eq", k:"="},
-          {t:"0", a:"zero", k:"0"},
-          {t:".", a:"", k:"."},
-          {t:"⌫", a:"op", k:"BKSP"},
-          {t:"+", a:"op", k:"+"},
-        ];
-
-        // state
-        let displayValue = "0";
-        let firstValue = null;
-        let operator = null;
-        let waitingForSecond = false;
-        let lastSecond = null; // for repeated "="
-        let lastOp = null;
-        let history = "";
-
-        function fmt(n){
-          // avoid 1.0000000002
-          const s = String(n);
-          if (s.includes("e") || s.includes("E")) return s;
-          const fixed = Number(n.toFixed(12));
-          return String(fixed);
-        }
-
-        function update(){
-          valueEl.textContent = displayValue;
-          historyEl.textContent = history;
-        }
-
-        function inputDigit(d){
-          if (waitingForSecond){
-            displayValue = d;
-            waitingForSecond = false;
-          } else {
-            displayValue = displayValue === "0" ? d : displayValue + d;
-          }
-          update();
-        }
-
-        function inputDot(){
-          if (waitingForSecond){
-            displayValue = "0.";
-            waitingForSecond = false;
-            update();
-            return;
-          }
-          if (!displayValue.includes(".")){
-            displayValue += ".";
-            update();
-          }
-        }
-
-        function clearAll(){
-          displayValue = "0";
-          firstValue = null;
-          operator = null;
-          waitingForSecond = false;
-          lastSecond = null;
-          lastOp = null;
-          history = "";
-          update();
-        }
-
-        function backspace(){
-          if (waitingForSecond) return;
-          if (displayValue.length <= 1 || (displayValue.length === 2 && displayValue.startsWith("-"))){
-            displayValue = "0";
-          } else {
-            displayValue = displayValue.slice(0, -1);
-          }
-          update();
-        }
-
-        function toggleSign(){
-          if (displayValue === "0") return;
-          displayValue = displayValue.startsWith("-") ? displayValue.slice(1) : "-" + displayValue;
-          update();
-        }
-
-        function percent(){
-          const v = parseFloat(displayValue);
-          if (!isFinite(v)) return;
-          displayValue = fmt(v / 100);
-          update();
-        }
-
-        function compute(a, op, b){
-          if (op === "+") return a + b;
-          if (op === "-") return a - b;
-          if (op === "*") return a * b;
-          if (op === "/") return b === 0 ? NaN : a / b;
-          return b;
-        }
-
-        function setOperator(nextOp){
-          const inputVal = parseFloat(displayValue);
-          if (!isFinite(inputVal)) {
-            displayValue = "Error";
-            update();
-            return;
-          }
-
-          if (operator && waitingForSecond){
-            operator = nextOp; // change mind
-            history = `${fmt(firstValue)} ${prettyOp(operator)}`;
-            update();
-            return;
-          }
-
-          if (firstValue === null){
-            firstValue = inputVal;
-          } else if (operator){
-            const result = compute(firstValue, operator, inputVal);
-            if (!isFinite(result)){
-              displayValue = "Error";
-              firstValue = null;
-              operator = null;
-              waitingForSecond = false;
-              history = "";
-              update();
-              return;
-            }
-            firstValue = result;
-            displayValue = fmt(result);
-          }
-
-          operator = nextOp;
-          waitingForSecond = true;
-          lastSecond = null;
-          lastOp = null;
-          history = `${fmt(firstValue)} ${prettyOp(operator)}`;
-          update();
-        }
-
-        function prettyOp(op){
-          if (op === "/") return "÷";
-          if (op === "*") return "×";
-          if (op === "-") return "−";
-          return op;
-        }
-
-        function equals(){
-          const inputVal = parseFloat(displayValue);
-
-          if (firstValue === null){
-            // nothing to do
-            return;
-          }
-
-          if (!operator && lastOp && lastSecond !== null){
-            const result2 = compute(firstValue, lastOp, lastSecond);
-            if (!isFinite(result2)){
-              displayValue = "Error"; firstValue = null; lastOp=null; lastSecond=null; history="";
-              update(); return;
-            }
-            firstValue = result2;
-            displayValue = fmt(result2);
-            history = "";
-            update();
-            return;
-          }
-
-          if (!operator){
-            // no operator set: do nothing
-            return;
-          }
-
-          const second = waitingForSecond ? (lastSecond !== null ? lastSecond : firstValue) : inputVal;
-          const result = compute(firstValue, operator, second);
-
-          if (!isFinite(result)){
-            displayValue = "Error"; firstValue = null; operator=null; waitingForSecond=false; history="";
-            update(); return;
-          }
-
-          history = `${fmt(firstValue)} ${prettyOp(operator)} ${fmt(second)} =`;
-          displayValue = fmt(result);
-
-          // keep for repeated "="
-          lastSecond = second;
-          lastOp = operator;
-
-          firstValue = result;
-          operator = null;
-          waitingForSecond = true;
-          update();
-        }
-
-        function handleAction(key){
-          if (displayValue === "Error" && key !== "AC") clearAll();
-
-          if (key >= "0" && key <= "9") return inputDigit(key);
-          if (key === ".") return inputDot();
-          if (key === "AC") return clearAll();
-          if (key === "BKSP") return backspace();
-          if (key === "SIGN") return toggleSign();
-          if (key === "PCT") return percent();
-          if (key === "+" || key === "-" || key === "*" || key === "/") return setOperator(key);
-          if (key === "=") return equals();
-        }
-
-        btns.forEach((b)=>{
-          const el = document.createElement("button");
-          el.className = "kal-btn " + (b.a || "");
-          el.type = "button";
-          el.textContent = b.t;
-          el.addEventListener("click", ()=>handleAction(b.k));
-          grid.appendChild(el);
-        });
-
-        shell.appendChild(top);
-        shell.appendChild(grid);
-        mountEl.appendChild(shell);
-
-        // Keyboard support
-        shell.addEventListener("keydown", (e)=>{
-          const k = e.key;
-          const map = {
-            "Enter": "=",
-            "=": "=",
-            "+": "+",
-            "-": "-",
-            "*": "*",
-            "/": "/",
-            ".": ".",
-            ",": ".",
-            "Backspace": "BKSP",
-            "Escape": "AC"
-          };
-          if (k >= "0" && k <= "9"){
-            e.preventDefault();
-            handleAction(k);
-            return;
-          }
-          if (map[k]){
-            e.preventDefault();
-            handleAction(map[k]);
-          }
-        });
-
-        update();
-        return {
-          setConfig(newCfg){
-            applyConfigToRoot(mountEl, newCfg);
-          },
-          getState(){
-            return { displayValue, firstValue, operator, waitingForSecond };
-          }
-        };
-      }
-
-      function applyConfigToRoot(rootEl, cfg){
-        // cfg already prepared in CSS-var form
-        rootEl.style.setProperty("--kal-frame", cfg.frame);
-        rootEl.style.setProperty("--kal-frame-border", cfg.frameBorder);
-        rootEl.style.setProperty("--kal-display-bg", cfg.displayBg);
-        rootEl.style.setProperty("--kal-display-text", cfg.displayText);
-        rootEl.style.setProperty("--kal-key-bg", cfg.keyBg);
-        rootEl.style.setProperty("--kal-key-text", cfg.keyText);
-        rootEl.style.setProperty("--kal-op-bg", cfg.opBg);
-        rootEl.style.setProperty("--kal-op-text", cfg.opText);
-        rootEl.style.setProperty("--kal-ac-bg", cfg.acBg);
-        rootEl.style.setProperty("--kal-ac-text", cfg.acText);
-        rootEl.style.setProperty("--kal-eq-bg", cfg.eqBg);
-        rootEl.style.setProperty("--kal-eq-text", cfg.eqText);
-        rootEl.style.setProperty("--kal-radius", cfg.radius);
-        rootEl.style.setProperty("--kal-key-radius", cfg.keyRadius);
-        rootEl.style.setProperty("--kal-glow", cfg.glow);
-      }
-
-      // ---------- Editor wiring ----------
-      const previewRoot = document.getElementById("kalPreviewRoot");
-      // Put CSS vars on the preview root so we can embed multiple widgets later
-      previewRoot.style.setProperty("--kal-bg", "transparent");
-
-      const calc = createCalculator(previewRoot, {});
-      const els = {
-        lang: document.getElementById("langSelect"),
-
-        cFrame: document.getElementById("cFrame"),
-        aFrame: document.getElementById("aFrame"),
-        cFrameBorder: document.getElementById("cFrameBorder"),
-        aFrameBorder: document.getElementById("aFrameBorder"),
-
-        cDispBg: document.getElementById("cDispBg"),
-        aDispBg: document.getElementById("aDispBg"),
-        cDispText: document.getElementById("cDispText"),
-        aDispText: document.getElementById("aDispText"),
-
-        cKeyBg: document.getElementById("cKeyBg"),
-        aKeyBg: document.getElementById("aKeyBg"),
-        cKeyText: document.getElementById("cKeyText"),
-        aKeyText: document.getElementById("aKeyText"),
-
-        cOpBg: document.getElementById("cOpBg"),
-        aOpBg: document.getElementById("aOpBg"),
-
-        cEqBg: document.getElementById("cEqBg"),
-        aEqBg: document.getElementById("aEqBg"),
-
-        cAcBg: document.getElementById("cAcBg"),
-        aAcBg: document.getElementById("aAcBg"),
-
-        rAll: document.getElementById("rAll"),
-        rAllText: document.getElementById("rAllText"),
-
-        cGlow: document.getElementById("cGlow"),
-        aGlow: document.getElementById("aGlow"),
-
-        btnGetCode: document.getElementById("btnGetCode"),
-        btnReset: document.getElementById("btnReset"),
-
-        modal: document.getElementById("modal"),
-        codeArea: document.getElementById("codeArea"),
-        btnCopy: document.getElementById("btnCopy"),
-        btnClose: document.getElementById("btnClose"),
-        toast: document.getElementById("toast"),
-      };
-
-      function getCfg(){
-        const frame = rgba(els.cFrame.value, els.aFrame.value/100);
-        const frameBorder = rgba(els.cFrameBorder.value, els.aFrameBorder.value/100);
-
-        const displayBg = rgba(els.cDispBg.value, els.aDispBg.value/100);
-        // display text alpha kept but typically 1
-        const displayText = rgba(els.cDispText.value, els.aDispText.value/100);
-
-        const keyBg = rgba(els.cKeyBg.value, els.aKeyBg.value/100);
-        const keyText = rgba(els.cKeyText.value, els.aKeyText.value/100);
-
-        const opBg = rgba(els.cOpBg.value, els.aOpBg.value/100);
-        const opText = keyText;
-
-        const eqBg = rgba(els.cEqBg.value, els.aEqBg.value/100);
-        const eqText = "#1C1400";
-
-        const acBg = rgba(els.cAcBg.value, els.aAcBg.value/100);
-        const acText = "#FFF2F0";
-
-        const radius = els.rAll.value + "px";
-        const keyRadius = Math.max(10, Math.round(Number(els.rAll.value) * 0.64)) + "px";
-
-        const glow = rgba(els.cGlow.value, els.aGlow.value/100);
-
-        return { frame, frameBorder, displayBg, displayText, keyBg, keyText, opBg, opText, eqBg, eqText, acBg, acText, radius, keyRadius, glow };
-      }
-
-      function apply(){
-        const cfg = getCfg();
-        applyConfigToRoot(previewRoot, cfg);
-      }
-
-      function setLang(lang){
-        const t = I18N[lang] || I18N.ru;
-
-        document.getElementById("ui_title").textContent = t.title;
-        document.getElementById("ui_lang_label").textContent = t.lang;
-
-        document.getElementById("ui_frame_label").textContent = t.frame;
-        document.getElementById("ui_frame_border_label").textContent = t.frameBorder;
-        document.getElementById("ui_display_bg_label").textContent = t.dispBg;
-        document.getElementById("ui_display_text_label").textContent = t.dispText;
-        document.getElementById("ui_keys_bg_label").textContent = t.keysBg;
-        document.getElementById("ui_keys_text_label").textContent = t.keysText;
-        document.getElementById("ui_ops_bg_label").textContent = t.opsBg;
-        document.getElementById("ui_eq_bg_label").textContent = t.eqBg;
-        document.getElementById("ui_ac_bg_label").textContent = t.acBg;
-        document.getElementById("ui_radius_label").textContent = t.radius;
-        document.getElementById("ui_glow_label").textContent = t.glow;
-
-        els.btnGetCode.textContent = t.getCode;
-        els.btnReset.textContent = t.reset;
-
-        document.getElementById("ui_preview").textContent = t.preview;
-        document.getElementById("ui_kbd").textContent = t.kbd;
-
-        document.getElementById("ui_hint").innerHTML = t.hint;
-        document.getElementById("ui_modal_title").textContent = t.modalTitle;
-        document.getElementById("ui_modal_hint").textContent = t.modalHint;
-
-        els.btnCopy.textContent = t.copy;
-        els.btnClose.textContent = t.close;
-
-        // store for toast
-        els.toast.dataset.msg = t.copied;
-      }
-
-      function showToast(text){
-        els.toast.textContent = text;
-        els.toast.style.display = "block";
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(()=> els.toast.style.display="none", 1400);
-      }
-
-      // Keep text input in sync
-      els.rAll.addEventListener("input", ()=>{
-        els.rAllText.value = els.rAll.value;
-        apply();
-      });
-      els.rAllText.addEventListener("input", ()=>{
-        const n = Math.max(8, Math.min(34, Number(els.rAllText.value || 0)));
-        els.rAll.value = String(isFinite(n) ? n : 22);
-        apply();
-      });
-
-      // Bind all controls
-      [
-        els.cFrame, els.aFrame,
-        els.cFrameBorder, els.aFrameBorder,
-        els.cDispBg, els.aDispBg,
-        els.cDispText, els.aDispText,
-        els.cKeyBg, els.aKeyBg,
-        els.cKeyText, els.aKeyText,
-        els.cOpBg, els.aOpBg,
-        els.cEqBg, els.aEqBg,
-        els.cAcBg, els.aAcBg,
-        els.cGlow, els.aGlow
-      ].forEach(el=> el.addEventListener("input", apply));
-
-      els.lang.addEventListener("change", ()=> setLang(els.lang.value));
-
-      // Reset
-      els.btnReset.addEventListener("click", ()=>{
-        els.lang.value = "ru";
-
-        els.cFrame.value = "#7b4dff"; els.aFrame.value = 16;
-        els.cFrameBorder.value = "#ffffff"; els.aFrameBorder.value = 14;
-
-        els.cDispBg.value = "#140a2d"; els.aDispBg.value = 55;
-        els.cDispText.value = "#ede7ff"; els.aDispText.value = 100;
-
-        els.cKeyBg.value = "#19143c"; els.aKeyBg.value = 55;
-        els.cKeyText.value = "#ede7ff"; els.aKeyText.value = 100;
-
-        els.cOpBg.value = "#1e1455"; els.aOpBg.value = 55;
-
-        els.cEqBg.value = "#ffdc5a"; els.aEqBg.value = 40;
-
-        els.cAcBg.value = "#ff5a50"; els.aAcBg.value = 35;
-
-        els.rAll.value = 22; els.rAllText.value = "22";
-
-        els.cGlow.value = "#be5aff"; els.aGlow.value = 85;
-
-        setLang("ru");
-        apply();
-      });
-
-      // ---------- Code generator ----------
-      function escapeHtml(s){
-        return s
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;");
-      }
-
-      function buildEmbedSnippet(cfg){
-        // Self-contained embed code.
-        // Uses a unique root container and injects styles + script only once per snippet.
-        // Background stays transparent.
-        const payload = {
-          frame: cfg.frame,
-          frameBorder: cfg.frameBorder,
-          displayBg: cfg.displayBg,
-          displayText: cfg.displayText,
-          keyBg: cfg.keyBg,
-          keyText: cfg.keyText,
-          opBg: cfg.opBg,
-          opText: cfg.opText,
-          eqBg: cfg.eqBg,
-          eqText: cfg.eqText,
-          acBg: cfg.acBg,
-          acText: cfg.acText,
-          radius: cfg.radius,
-          keyRadius: cfg.keyRadius,
-          glow: cfg.glow
-        };
-
-        const json = JSON.stringify(payload);
-
-        // Note: we wrap everything in an IIFE and scope CSS by attribute [data-kal-embed]
-        return `<!-- Kal (onegavakota-cmyk) – Self-contained Genially embed -->
-<div data-kal-embed="1" data-kal-config='${json.replaceAll("'", "&apos;")}' style="background:transparent;">
-  <div class="kal" style="background:transparent;"></div>
-</div>
-
-<style>
-  /* Scoped styles (only affect elements inside [data-kal-embed]) */
-  [data-kal-embed]{ background:transparent !important; }
-  [data-kal-embed] .kal{
-    background: transparent;
-    border-radius: var(--kal-radius, 22px);
-    padding: 16px;
-    width: 320px;
-    box-sizing: border-box;
-    position: relative;
-  }
-  [data-kal-embed] .kal::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    border-radius: calc(var(--kal-radius, 22px) + 2px);
-    background:
-      radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,0.35), transparent 55%),
-      radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,0.28), transparent 55%),
-      radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,0.18), transparent 60%);
-    z-index: -2;
-  }
-  [data-kal-embed] .kal-shell{
-    border-radius: var(--kal-radius, 22px);
-    background: var(--kal-frame, rgba(130, 60, 255, 0.16));
-    border: 1px solid var(--kal-frame-border, rgba(255,255,255,0.14));
-    padding: 14px;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.05) inset,
-      0 18px 60px rgba(0,0,0,0.35),
-      0 0 24px rgba(190, 90, 255, 0.22);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  [data-kal-embed] .kal-top{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
-  [data-kal-embed] .kal-display{
-    background: var(--kal-display-bg, rgba(20,10,45,0.55));
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 16px;
-    padding: 12px 12px;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.04) inset,
-      0 0 18px rgba(190,90,255,0.12);
-    overflow:hidden;
-  }
-  [data-kal-embed] .kal-history{
-    font-size: 12px;
-    color: rgba(237, 231, 255, 0.65);
-    min-height: 16px;
-    text-align: right;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
-  }
-  [data-kal-embed] .kal-value{
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--kal-display-text, #EDE7FF);
-    text-align: right;
-    letter-spacing: 0.2px;
-    line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow:
-      0 0 10px rgba(190,90,255,0.18),
-      0 0 14px rgba(0,210,255,0.10);
-  }
-  [data-kal-embed] .kal-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  [data-kal-embed] .kal-btn{
-    border: 1px solid rgba(255,255,255,0.14);
-    background: var(--kal-key-bg, rgba(25,20,60,0.55));
-    color: var(--kal-key-text, #EDE7FF);
-    border-radius: var(--kal-key-radius, 14px);
-    padding: 14px 0;
-    font-weight: 800;
-    font-size: 16px;
-    cursor:pointer;
-    user-select:none;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.03) inset,
-      0 0 16px rgba(0,0,0,0.15);
-    transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
-    position: relative;
-    outline: none;
-  }
-  [data-kal-embed] .kal-btn:active{ transform: translateY(1px); filter: brightness(1.05); }
-  [data-kal-embed] .kal-btn.op{
-    background: var(--kal-op-bg, rgba(30,20,85,0.55));
-    color: var(--kal-op-text, #EDE7FF);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.03) inset,
-      0 0 18px rgba(0, 210, 255, 0.12);
-  }
-  [data-kal-embed] .kal-btn.ac{
-    background: var(--kal-ac-bg, rgba(255, 90, 80, 0.35));
-    color: var(--kal-ac-text, #FFF2F0);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.03) inset,
-      0 0 18px rgba(255, 90, 80, 0.12);
-  }
-  [data-kal-embed] .kal-btn.eq{
-    background: var(--kal-eq-bg, rgba(255, 220, 90, 0.40));
-    color: var(--kal-eq-text, #1C1400);
-    grid-row: span 2;
-    padding: 0;
-    display:flex;
-    align-items:center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.03) inset,
-      0 0 22px rgba(255, 220, 90, 0.20);
-  }
-  [data-kal-embed] .kal-btn.zero{ grid-column: span 2; }
-</style>
 
 <script>
 (function(){
-  function applyVars(root, cfg){
-    root.style.setProperty("--kal-frame", cfg.frame);
-    root.style.setProperty("--kal-frame-border", cfg.frameBorder);
-    root.style.setProperty("--kal-display-bg", cfg.displayBg);
-    root.style.setProperty("--kal-display-text", cfg.displayText);
-    root.style.setProperty("--kal-key-bg", cfg.keyBg);
-    root.style.setProperty("--kal-key-text", cfg.keyText);
-    root.style.setProperty("--kal-op-bg", cfg.opBg);
-    root.style.setProperty("--kal-op-text", cfg.opText);
-    root.style.setProperty("--kal-ac-bg", cfg.acBg);
-    root.style.setProperty("--kal-ac-text", cfg.acText);
-    root.style.setProperty("--kal-eq-bg", cfg.eqBg);
-    root.style.setProperty("--kal-eq-text", cfg.eqText);
-    root.style.setProperty("--kal-radius", cfg.radius);
-    root.style.setProperty("--kal-key-radius", cfg.keyRadius);
-    root.style.setProperty("--kal-glow", cfg.glow);
+  const els = {
+    cFrame: q("#cFrame"), aFrame: q("#aFrame"),
+    cFrameBorder: q("#cFrameBorder"), aFrameBorder: q("#aFrameBorder"),
+    cDispBg: q("#cDispBg"), aDispBg: q("#aDispBg"),
+    cDispText: q("#cDispText"), aDispText: q("#aDispText"),
+    cKeyBg: q("#cKeyBg"), aKeyBg: q("#aKeyBg"),
+    cKeyText: q("#cKeyText"), aKeyText: q("#aKeyText"),
+    cOpBg: q("#cOpBg"), aOpBg: q("#aOpBg"),
+    cEqBg: q("#cEqBg"), aEqBg: q("#aEqBg"),
+    w: q("#w"), h: q("#h"),
+    prev: q("#prev"), out: q("#out"),
+    get: q("#get"), copy: q("#copy"),
+  };
+  function q(s){ return document.querySelector(s); }
+  function rgba(hex,a){
+    const h=hex.replace("#","").trim();
+    const f=h.length===3?h.split("").map(x=>x+x).join(""):h;
+    const r=parseInt(f.slice(0,2),16), g=parseInt(f.slice(2,4),16), b=parseInt(f.slice(4,6),16);
+    return `rgba(${r},${g},${b},${a})`;
   }
-  function prettyOp(op){ return op==="/"?"÷":op==="*"?"×":op==="-"?"−":op; }
-  function fmt(n){
-    var s = String(n);
-    if (s.indexOf("e")>=0 || s.indexOf("E")>=0) return s;
-    var fixed = Number(n.toFixed(12));
-    return String(fixed);
+  function cfg(){
+    return {
+      frame: rgba(els.cFrame.value, els.aFrame.value/100),
+      frameBorder: rgba(els.cFrameBorder.value, els.aFrameBorder.value/100),
+      displayBg: rgba(els.cDispBg.value, els.aDispBg.value/100),
+      displayText: rgba(els.cDispText.value, els.aDispText.value/100),
+      keyBg: rgba(els.cKeyBg.value, els.aKeyBg.value/100),
+      keyText: rgba(els.cKeyText.value, els.aKeyText.value/100),
+      opBg: rgba(els.cOpBg.value, els.aOpBg.value/100),
+      opText: rgba(els.cKeyText.value, els.aKeyText.value/100),
+      eqBg: rgba(els.cEqBg.value, els.aEqBg.value/100),
+      eqText: "#1C1400",
+      radius: "22px",
+      keyRadius: "14px",
+    };
   }
-  function compute(a, op, b){
-    if (op === "+") return a + b;
-    if (op === "-") return a - b;
-    if (op === "*") return a * b;
-    if (op === "/") return b === 0 ? NaN : a / b;
-    return b;
+  function escAttr(s){
+    return String(s).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
   }
-
-  function mountCalc(host){
-    var cfg = {};
-    try{ cfg = JSON.parse(host.getAttribute("data-kal-config") || "{}"); }catch(e){}
-    applyVars(host, cfg);
-
-    var root = host.querySelector(".kal");
-    if (!root) return;
-    root.innerHTML = "";
-
-    var shell = document.createElement("div");
-    shell.className = "kal-shell";
-    shell.tabIndex = 0;
-
-    var top = document.createElement("div");
-    top.className = "kal-top";
-
-    var display = document.createElement("div");
-    display.className = "kal-display";
-
-    var historyEl = document.createElement("div");
-    historyEl.className = "kal-history";
-    historyEl.textContent = "";
-
-    var valueEl = document.createElement("div");
-    valueEl.className = "kal-value";
-    valueEl.textContent = "0";
-
-    display.appendChild(historyEl);
-    display.appendChild(valueEl);
-
-    top.appendChild(display);
-
-    var grid = document.createElement("div");
-    grid.className = "kal-grid";
-
-    var btns = [
-      {t:"AC", a:"ac", k:"AC"},
-      {t:"±", a:"op", k:"SIGN"},
-      {t:"%", a:"op", k:"PCT"},
-      {t:"÷", a:"op", k:"/"},
-      {t:"7", a:"", k:"7"},
-      {t:"8", a:"", k:"8"},
-      {t:"9", a:"", k:"9"},
-      {t:"×", a:"op", k:"*"},
-      {t:"4", a:"", k:"4"},
-      {t:"5", a:"", k:"5"},
-      {t:"6", a:"", k:"6"},
-      {t:"−", a:"op", k:"-"},
-      {t:"1", a:"", k:"1"},
-      {t:"2", a:"", k:"2"},
-      {t:"3", a:"", k:"3"},
-      {t:"=", a:"eq", k:"="},
-      {t:"0", a:"zero", k:"0"},
-      {t:".", a:"", k:"."},
-      {t:"⌫", a:"op", k:"BKSP"},
-      {t:"+", a:"op", k:"+"}
-    ];
-
-    var displayValue = "0";
-    var firstValue = null;
-    var operator = null;
-    var waitingForSecond = false;
-    var lastSecond = null;
-    var lastOp = null;
-    var history = "";
-
-    function update(){
-      valueEl.textContent = displayValue;
-      historyEl.textContent = history;
-    }
-    function inputDigit(d){
-      if (waitingForSecond){ displayValue = d; waitingForSecond = false; }
-      else { displayValue = (displayValue==="0") ? d : (displayValue + d); }
-      update();
-    }
-    function inputDot(){
-      if (waitingForSecond){ displayValue = "0."; waitingForSecond = false; update(); return; }
-      if (displayValue.indexOf(".") === -1){ displayValue += "."; update(); }
-    }
-    function clearAll(){
-      displayValue="0"; firstValue=null; operator=null; waitingForSecond=false; lastSecond=null; lastOp=null; history="";
-      update();
-    }
-    function backspace(){
-      if (waitingForSecond) return;
-      if (displayValue.length <= 1 || (displayValue.length===2 && displayValue.charAt(0)==="-")) displayValue="0";
-      else displayValue = displayValue.slice(0,-1);
-      update();
-    }
-    function toggleSign(){
-      if (displayValue==="0") return;
-      displayValue = (displayValue.charAt(0)==="-") ? displayValue.slice(1) : ("-" + displayValue);
-      update();
-    }
-    function percent(){
-      var v = parseFloat(displayValue);
-      if (!isFinite(v)) return;
-      displayValue = fmt(v/100);
-      update();
-    }
-    function setOperator(nextOp){
-      var inputVal = parseFloat(displayValue);
-      if (!isFinite(inputVal)){ displayValue="Error"; update(); return; }
-
-      if (operator && waitingForSecond){
-        operator = nextOp;
-        history = fmt(firstValue) + " " + prettyOp(operator);
-        update();
-        return;
-      }
-
-      if (firstValue === null) firstValue = inputVal;
-      else if (operator){
-        var result = compute(firstValue, operator, inputVal);
-        if (!isFinite(result)){ displayValue="Error"; firstValue=null; operator=null; waitingForSecond=false; history=""; update(); return; }
-        firstValue = result;
-        displayValue = fmt(result);
-      }
-
-      operator = nextOp;
-      waitingForSecond = true;
-      lastSecond = null;
-      lastOp = null;
-      history = fmt(firstValue) + " " + prettyOp(operator);
-      update();
-    }
-    function equals(){
-      var inputVal = parseFloat(displayValue);
-      if (firstValue === null) return;
-
-      if (!operator && lastOp && lastSecond !== null){
-        var r2 = compute(firstValue, lastOp, lastSecond);
-        if (!isFinite(r2)){ displayValue="Error"; firstValue=null; lastOp=null; lastSecond=null; history=""; update(); return; }
-        firstValue = r2;
-        displayValue = fmt(r2);
-        history = "";
-        update();
-        return;
-      }
-
-      if (!operator) return;
-
-      var second = waitingForSecond ? (lastSecond !== null ? lastSecond : firstValue) : inputVal;
-      var result = compute(firstValue, operator, second);
-      if (!isFinite(result)){ displayValue="Error"; firstValue=null; operator=null; waitingForSecond=false; history=""; update(); return; }
-
-      history = fmt(firstValue) + " " + prettyOp(operator) + " " + fmt(second) + " =";
-      displayValue = fmt(result);
-
-      lastSecond = second;
-      lastOp = operator;
-
-      firstValue = result;
-      operator = null;
-      waitingForSecond = true;
-      update();
-    }
-    function handleAction(key){
-      if (displayValue==="Error" && key!=="AC") clearAll();
-      if (key>="0" && key<="9") return inputDigit(key);
-      if (key===".") return inputDot();
-      if (key==="AC") return clearAll();
-      if (key==="BKSP") return backspace();
-      if (key==="SIGN") return toggleSign();
-      if (key==="PCT") return percent();
-      if (key==="+" || key==="-" || key==="*" || key==="/") return setOperator(key);
-      if (key==="=") return equals();
-    }
-
-    for (var i=0;i<btns.length;i++){
-      (function(b){
-        var el = document.createElement("button");
-        el.className = "kal-btn " + (b.a || "");
-        el.type = "button";
-        el.textContent = b.t;
-        el.addEventListener("click", function(){ handleAction(b.k); });
-        grid.appendChild(el);
-      })(btns[i]);
-    }
-
-    shell.appendChild(top);
-    shell.appendChild(grid);
-    root.appendChild(shell);
-
-    shell.addEventListener("keydown", function(e){
-      var k = e.key;
-      var map = {"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
-      if (k>="0" && k<="9"){ e.preventDefault(); handleAction(k); return; }
-      if (map[k]){ e.preventDefault(); handleAction(map[k]); }
-    });
-
-    update();
+  function srcdoc(c){
+    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{height:100%;margin:0;background:transparent!important;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+:root{
+--kal-frame:${c.frame};--kal-frame-border:${c.frameBorder};
+--kal-display-bg:${c.displayBg};--kal-display-text:${c.displayText};
+--kal-key-bg:${c.keyBg};--kal-key-text:${c.keyText};
+--kal-op-bg:${c.opBg};--kal-op-text:${c.opText};
+--kal-eq-bg:${c.eqBg};--kal-eq-text:${c.eqText};
+--kal-radius:${c.radius};--kal-key-radius:${c.keyRadius};
+}
+.kal{background:transparent;border-radius:var(--kal-radius);padding:16px;width:320px;box-sizing:border-box;position:relative}
+.kal::before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
+background:radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,.35), transparent 55%),
+radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,.28), transparent 55%),
+radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);z-index:-2}
+.shell{border-radius:var(--kal-radius);background:var(--kal-frame);border:1px solid var(--kal-frame-border);padding:14px;
+box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 18px 60px rgba(0,0,0,.35),0 0 24px rgba(190,90,255,.22);
+backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.display{background:var(--kal-display-bg);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px}
+.hist{font-size:12px;color:rgba(237,231,255,.65);min-height:16px;text-align:right;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.val{font-size:32px;font-weight:800;color:var(--kal-display-text);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.btn{border:1px solid rgba(255,255,255,.14);background:var(--kal-key-bg);color:var(--kal-key-text);
+border-radius:var(--kal-key-radius);padding:14px 0;font-weight:800;font-size:16px;cursor:pointer}
+.btn.op{background:var(--kal-op-bg);color:var(--kal-op-text)}
+.btn.eq{background:var(--kal-eq-bg);color:var(--kal-eq-text);grid-row:span 2;display:flex;align-items:center;justify-content:center}
+.btn.zero{grid-column:span 2}
+</style></head><body>
+<div class="kal"><div class="shell" id="sh" tabindex="0"></div></div>
+<script>
+(function(){
+function pretty(op){return op==="/"?"÷":op==="*"?"×":op==="-"?"−":op;}
+function fmt(n){var s=String(n); if(s.indexOf("e")>=0||s.indexOf("E")>=0) return s; return String(Number(n.toFixed(12)));}
+function comp(a,op,b){if(op==="+")return a+b;if(op==="-")return a-b;if(op==="*")return a*b;if(op==="/")return b===0?NaN:a/b;return b;}
+var sh=document.getElementById("sh");
+var top=document.createElement("div"); top.className="top";
+var disp=document.createElement("div"); disp.className="display";
+var hist=document.createElement("div"); hist.className="hist";
+var val=document.createElement("div"); val.className="val"; val.textContent="0";
+disp.appendChild(hist); disp.appendChild(val); top.appendChild(disp);
+var grid=document.createElement("div"); grid.className="grid";
+var btns=[
+{t:"AC",k:"AC",c:"op"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
+{t:"7",k:"7"},{t:"8",k:"8"},{t:"9",k:"9"},{t:"×",k:"*",c:"op"},
+{t:"4",k:"4"},{t:"5",k:"5"},{t:"6",k:"6"},{t:"−",k:"-",c:"op"},
+{t:"1",k:"1"},{t:"2",k:"2"},{t:"3",k:"3"},{t:"=",k:"=",c:"eq"},
+{t:"0",k:"0",c:"zero"},{t:".",k:"."},{t:"⌫",k:"BKSP",c:"op"},{t:"+",k:"+",c:"op"}
+];
+var dv="0", fv=null, op=null, wait=false, lastB=null, lastOp=null, h="";
+function upd(){val.textContent=dv; hist.textContent=h;}
+function digit(d){ if(wait){dv=d;wait=false;} else dv=(dv==="0")?d:dv+d; upd();}
+function dot(){ if(wait){dv="0.";wait=false;upd();return;} if(dv.indexOf(".")===-1){dv+=".";upd();} }
+function clear(){dv="0";fv=null;op=null;wait=false;lastB=null;lastOp=null;h="";upd();}
+function bk(){ if(wait) return; if(dv.length<=1 || (dv.length===2 && dv[0]==="-")) dv="0"; else dv=dv.slice(0,-1); upd();}
+function sign(){ if(dv==="0") return; dv=(dv[0]==="-")?dv.slice(1):("-"+dv); upd();}
+function pct(){ var v=parseFloat(dv); if(!isFinite(v))return; dv=fmt(v/100); upd(); }
+function setOp(nop){
+  var v=parseFloat(dv); if(!isFinite(v)){dv="Error";upd();return;}
+  if(op && wait){ op=nop; h=fmt(fv)+" "+pretty(op); upd(); return; }
+  if(fv===null) fv=v;
+  else if(op){
+    var r=comp(fv,op,v); if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
+    fv=r; dv=fmt(r);
   }
-
-  // Mount all instances in this embed snippet
-  var nodes = document.querySelectorAll('[data-kal-embed="1"]');
-  for (var i=0;i<nodes.length;i++) mountCalc(nodes[i]);
+  op=nop; wait=true; lastB=null; lastOp=null; h=fmt(fv)+" "+pretty(op); upd();
+}
+function eq(){
+  var v=parseFloat(dv); if(fv===null) return;
+  if(!op && lastOp && lastB!==null){
+    var r2=comp(fv,lastOp,lastB); if(!isFinite(r2)){dv="Error";fv=null;lastOp=null;lastB=null;h="";upd();return;}
+    fv=r2; dv=fmt(r2); h=""; upd(); return;
+  }
+  if(!op) return;
+  var b = wait ? (lastB!==null?lastB:fv) : v;
+  var r=comp(fv,op,b); if(!isFinite(r)){dv="Error";fv=null;op=null;wait=false;h="";upd();return;}
+  h=fmt(fv)+" "+pretty(op)+" "+fmt(b)+" =";
+  dv=fmt(r);
+  lastB=b; lastOp=op;
+  fv=r; op=null; wait=true; upd();
+}
+function act(k){
+  if(dv==="Error" && k!=="AC") clear();
+  if(k>="0"&&k<="9") return digit(k);
+  if(k===".") return dot();
+  if(k==="AC") return clear();
+  if(k==="BKSP") return bk();
+  if(k==="SIGN") return sign();
+  if(k==="PCT") return pct();
+  if(k==="+"||k==="-"||k==="*"||k==="/") return setOp(k);
+  if(k==="=") return eq();
+}
+sh.appendChild(top); sh.appendChild(grid);
+btns.forEach(b=>{
+  var el=document.createElement("button");
+  el.className="btn"+(b.c?" "+b.c:"");
+  el.textContent=b.t; el.type="button";
+  el.addEventListener("click",()=>act(b.k));
+  grid.appendChild(el);
+});
+sh.addEventListener("keydown",e=>{
+  var m={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
+  if(e.key>="0"&&e.key<="9"){e.preventDefault();act(e.key);return;}
+  if(m[e.key]){e.preventDefault();act(m[e.key]);}
+});
+upd(); setTimeout(()=>{try{sh.focus()}catch(e){}},60);
 })();
-</script>`;
-      }
+</script>
+</body></html>`;
+  }
+  function buildIframe(){
+    const c = cfg();
+    const w = Math.max(240, Number(els.w.value||360));
+    const h = Math.max(280, Number(els.h.value||520));
+    const s = srcdoc(c);
+    return `<iframe style="width:${w}px;height:${h}px;border:0;background:transparent" width="${w}" height="${h}" allowtransparency="true" srcdoc="${escAttr(s)}"></iframe>`;
+  }
+  function refresh(){
+    const w = Math.max(240, Number(els.w.value||360));
+    const h = Math.max(280, Number(els.h.value||520));
+    els.prev.width = w; els.prev.height = h;
+    els.prev.style.width = w+"px"; els.prev.style.height = h+"px";
+    els.prev.srcdoc = srcdoc(cfg());
+  }
 
-      // Modal controls
-      function openModal(){
-        els.modal.style.display = "flex";
-      }
-      function closeModal(){
-        els.modal.style.display = "none";
-      }
-      els.btnClose.addEventListener("click", closeModal);
-      els.modal.addEventListener("click", (e)=>{ if (e.target === els.modal) closeModal(); });
+  document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input", refresh));
+  els.get.addEventListener("click", ()=>{ els.out.value = buildIframe(); });
+  els.copy.addEventListener("click", async ()=>{
+    const txt = els.out.value || buildIframe();
+    els.out.value = txt;
+    try{ await navigator.clipboard.writeText(txt); alert("Copied"); }
+    catch(e){ els.out.focus(); els.out.select(); document.execCommand("copy"); alert("Copied"); }
+  });
 
-      // Get code
-      els.btnGetCode.addEventListener("click", ()=>{
-        const cfg = getCfg();
-        const snippet = buildEmbedSnippet(cfg);
-        els.codeArea.value = snippet;
-        openModal();
-      });
-
-      // Copy
-      els.btnCopy.addEventListener("click", async ()=>{
-        try{
-          await navigator.clipboard.writeText(els.codeArea.value);
-          showToast(els.toast.dataset.msg || "Copied");
-        }catch(e){
-          // fallback
-          els.codeArea.focus();
-          els.codeArea.select();
-          document.execCommand("copy");
-          showToast(els.toast.dataset.msg || "Copied");
-        }
-      });
-
-      // init
-      setLang("ru");
-      apply();
-
-      // focus preview calc for keyboard immediately (nice UX inside genially)
-      setTimeout(()=>{
-        const shell = previewRoot.querySelector(".kal-shell");
-        if (shell) shell.focus();
-      }, 80);
-    })();
-  </script>
+  refresh();
+})();
+</script>
 </body>
 </html>
