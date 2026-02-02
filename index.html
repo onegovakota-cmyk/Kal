@@ -1,365 +1,115 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kal – Genially One File</title>
-  <style>
-    html,body{height:100%;margin:0;background:transparent!important}
-  </style>
-</head>
-<body>
-  <!-- В Genially часто режут <script> в HTML-блоке. Поэтому запускаем всё внутри iframe srcdoc -->
-  <iframe
-    style="width:100%;height:760px;border:0;background:transparent;"
-    width="100%" height="760"
-    allow="clipboard-read; clipboard-write"
-    allowtransparency="true"
-    srcdoc='<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Kal Editor</title>
   <style>
-    :root{
-      --ui-bg: rgba(10,10,20,0.55);
-      --ui-border: rgba(255,255,255,0.12);
-      --ui-text: rgba(255,255,255,0.92);
-      --ui-muted: rgba(255,255,255,0.62);
-      --ui-accent: rgba(120, 90, 255, 0.95);
-    }
-    html, body { height:100%; }
-    body{
-      margin:0;
-      background: transparent !important;
-      color: var(--ui-text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-    .wrap{
-      display:grid;
-      grid-template-columns: minmax(280px, 360px) minmax(280px, 1fr);
-      gap: 14px;
-      padding: 14px;
-      box-sizing: border-box;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    @media (max-width: 900px){ .wrap{ grid-template-columns: 1fr; } }
-    .panel{
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-border);
-      border-radius: 18px;
-      padding: 14px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-    }
-    .panel h2{
-      margin: 0 0 10px;
-      font-size: 14px;
-      font-weight: 900;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .badge{
-      font-size: 12px;
-      color: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 4px 8px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    .row.one{ grid-template-columns: 1fr; }
-    label{
-      display:block;
-      font-size: 12px;
-      color: var(--ui-muted);
-      margin: 0 0 6px;
-    }
-    .ctrl{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 10px;
-    }
-    input[type="color"]{
-      width: 42px;
-      height: 34px;
-      border: none;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-    }
-    input[type="range"]{
-      width: 100%;
-      accent-color: var(--ui-accent);
-    }
-    input[type="number"], select{
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--ui-text);
-      border-radius: 12px;
-      padding: 9px 10px;
-      outline: none;
-    }
-    .btns{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-    .btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight: 900;
-      font-size: 13px;
-      user-select: none;
-    }
-    .btn.primary{
-      border-color: rgba(120,90,255,0.45);
-      background: rgba(120,90,255,0.22);
-    }
-    .hint{
-      font-size: 12px;
-      color: rgba(255,255,255,0.62);
-      line-height: 1.35;
-      margin-top: 10px;
-    }
-    textarea{
-      width:100%;
-      height: 280px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.35);
-      color: rgba(255,255,255,0.92);
-      padding: 12px;
-      box-sizing: border-box;
-      resize: vertical;
-      outline: none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      white-space: pre;
-    }
-    .ok{
-      display:none;
-      margin-top:10px;
-      font-size:12px;
-      color: rgba(210,255,210,0.9);
-    }
-
-    /* ===== калькулятор (preview, без iframe!) ===== */
-    .preview{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height: 520px;
-      padding: 14px;
-      background: transparent;
-      border-radius: 18px;
-    }
-
-    .kal{
-      background: transparent;
-      border-radius: var(--kal-radius, 22px);
-      padding: 16px;
-      width: 320px;
-      box-sizing: border-box;
-      position: relative;
-    }
-    .kal::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border-radius: calc(var(--kal-radius, 22px) + 2px);
-      background:
-        radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,0.35), transparent 55%),
-        radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,0.28), transparent 55%),
-        radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,0.18), transparent 60%);
-      z-index: -2;
-    }
-    .kal-shell{
-      border-radius: var(--kal-radius, 22px);
-      background: var(--kal-frame, rgba(123,77,255,0.16));
-      border: 1px solid var(--kal-frame-border, rgba(255,255,255,0.14));
-      padding: 14px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 18px 60px rgba(0,0,0,0.35),
-        0 0 24px rgba(190, 90, 255, 0.22);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .kal-top{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
-    .kal-display{
-      background: var(--kal-display-bg, rgba(20,10,45,0.55));
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      padding: 12px;
-      overflow:hidden;
-      box-shadow: 0 0 18px rgba(190,90,255,0.12);
-    }
-    .kal-history{
-      font-size: 12px;
-      color: rgba(237, 231, 255, 0.65);
-      min-height: 16px;
-      text-align:right;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 4px;
-    }
-    .kal-value{
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--kal-display-text, rgba(237,231,255,1));
-      text-align:right;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .kal-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .kal-btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: var(--kal-key-bg, rgba(25,20,60,0.55));
-      color: var(--kal-key-text, rgba(237,231,255,1));
-      border-radius: var(--kal-key-radius, 14px);
-      padding: 14px 0;
-      font-weight: 900;
-      font-size: 16px;
-      cursor:pointer;
-      user-select:none;
-      outline:none;
-    }
-    .kal-btn:active{ transform: translateY(1px); filter: brightness(1.05); }
-    .kal-btn.op{ background: var(--kal-op-bg, rgba(30,20,85,0.55)); color: var(--kal-op-text, rgba(237,231,255,1)); }
-    .kal-btn.ac{ background: var(--kal-ac-bg, rgba(255,90,80,0.35)); color: var(--kal-ac-text, #FFF2F0); }
-    .kal-btn.eq{
-      background: var(--kal-eq-bg, rgba(255,220,90,0.40));
-      color: var(--kal-eq-text, #1C1400);
-      grid-row: span 2;
-      display:flex; align-items:center; justify-content:center;
-      padding: 0; font-size: 18px;
-    }
-    .kal-btn.zero{ grid-column: span 2; }
+    html,body{height:100%;margin:0;background:#0b0b14;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:1000px;margin:0 auto;padding:14px;display:grid;grid-template-columns:360px 1fr;gap:14px}
+    @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+    .panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px}
+    h2{margin:0 0 10px;font-size:14px;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .badge{font-size:12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 8px;opacity:.85;white-space:nowrap}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+    .row.one{grid-template-columns:1fr}
+    label{display:block;font-size:12px;opacity:.75;margin:0 0 6px}
+    .ctrl{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px}
+    input[type=color]{width:42px;height:34px;border:0;background:transparent;padding:0}
+    input[type=range]{width:100%}
+    input[type=number]{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;padding:9px 10px;outline:none}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{cursor:pointer;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;font-weight:900;padding:10px 12px}
+    button.primary{border-color:rgba(120,90,255,.55);background:rgba(120,90,255,.22)}
+    .hint{font-size:12px;opacity:.7;line-height:1.35;margin-top:10px}
+    .preview{display:flex;align-items:center;justify-content:center;min-height:540px}
+    iframe{border:0;background:transparent;border-radius:18px}
+    textarea{width:100%;height:300px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:#fff;padding:12px;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.35}
   </style>
 </head>
-
 <body>
   <div class="wrap">
     <div class="panel">
-      <h2>
-        <span>Редактор калькулятора</span>
-        <span class="badge">onegavakota-cmyk / Kal</span>
-      </h2>
+      <h2><span>Редактор</span><span class="badge">Kal / GitHub Pages</span></h2>
 
-      <div class="row one">
+      <div class="row">
         <div>
-          <label>Язык интерфейса редактора</label>
+          <label>Корпус</label>
           <div class="ctrl">
-            <select id="lang">
-              <option value="ru" selected>Русский</option>
-              <option value="en">English</option>
-            </select>
+            <input type="color" id="frame" value="#7b4dff"/>
+            <input type="range" id="frameA" min="0" max="100" value="16"/>
+          </div>
+        </div>
+        <div>
+          <label>Обводка</label>
+          <div class="ctrl">
+            <input type="color" id="frameBorder" value="#ffffff"/>
+            <input type="range" id="frameBorderA" min="0" max="100" value="14"/>
           </div>
         </div>
       </div>
 
       <div class="row">
         <div>
-          <label>Корпус / рамка</label>
+          <label>Экран фон</label>
           <div class="ctrl">
-            <input type="color" id="cFrame" value="#7b4dff"/>
-            <input type="range" id="aFrame" min="0" max="100" value="16"/>
+            <input type="color" id="dispBg" value="#140a2d"/>
+            <input type="range" id="dispBgA" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Обводка корпуса</label>
+          <label>Экран текст</label>
           <div class="ctrl">
-            <input type="color" id="cFrameBorder" value="#ffffff"/>
-            <input type="range" id="aFrameBorder" min="0" max="100" value="14"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Экран (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cDispBg" value="#140a2d"/>
-            <input type="range" id="aDispBg" min="0" max="100" value="55"/>
-          </div>
-        </div>
-        <div>
-          <label>Экран (текст)</label>
-          <div class="ctrl">
-            <input type="color" id="cDispText" value="#ede7ff"/>
-            <input type="range" id="aDispText" min="0" max="100" value="100"/>
+            <input type="color" id="dispText" value="#ede7ff"/>
+            <input type="range" id="dispTextA" min="0" max="100" value="100"/>
           </div>
         </div>
       </div>
 
       <div class="row">
         <div>
-          <label>Кнопки (фон)</label>
+          <label>Кнопки фон</label>
           <div class="ctrl">
-            <input type="color" id="cKeyBg" value="#19143c"/>
-            <input type="range" id="aKeyBg" min="0" max="100" value="55"/>
+            <input type="color" id="keyBg" value="#19143c"/>
+            <input type="range" id="keyBgA" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Кнопки (текст)</label>
+          <label>Кнопки текст</label>
           <div class="ctrl">
-            <input type="color" id="cKeyText" value="#ede7ff"/>
-            <input type="range" id="aKeyText" min="0" max="100" value="100"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Операторы (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cOpBg" value="#1e1455"/>
-            <input type="range" id="aOpBg" min="0" max="100" value="55"/>
-          </div>
-        </div>
-        <div>
-          <label>Равно (фон)</label>
-          <div class="ctrl">
-            <input type="color" id="cEqBg" value="#ffdc5a"/>
-            <input type="range" id="aEqBg" min="0" max="100" value="40"/>
+            <input type="color" id="keyText" value="#ede7ff"/>
+            <input type="range" id="keyTextA" min="0" max="100" value="100"/>
           </div>
         </div>
       </div>
 
       <div class="row">
         <div>
-          <label>AC (фон)</label>
+          <label>Операторы фон</label>
           <div class="ctrl">
-            <input type="color" id="cAcBg" value="#ff5a50"/>
-            <input type="range" id="aAcBg" min="0" max="100" value="35"/>
+            <input type="color" id="opBg" value="#1e1455"/>
+            <input type="range" id="opBgA" min="0" max="100" value="55"/>
           </div>
         </div>
         <div>
-          <label>Скругление</label>
+          <label>Равно фон</label>
+          <div class="ctrl">
+            <input type="color" id="eqBg" value="#ffdc5a"/>
+            <input type="range" id="eqBgA" min="0" max="100" value="40"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>AC фон</label>
+          <div class="ctrl">
+            <input type="color" id="acBg" value="#ff5a50"/>
+            <input type="range" id="acBgA" min="0" max="100" value="35"/>
+          </div>
+        </div>
+        <div>
+          <label>Скругления</label>
           <div class="ctrl">
             <input type="number" id="radius" min="8" max="34" value="22"/>
             <input type="number" id="keyRadius" min="8" max="24" value="14"/>
@@ -369,7 +119,7 @@
 
       <div class="row one">
         <div>
-          <label>Размер iframe (который копируешь)</label>
+          <label>Размер iframe</label>
           <div class="ctrl">
             <input type="number" id="w" min="240" max="1200" value="360"/>
             <input type="number" id="h" min="280" max="1400" value="520"/>
@@ -378,350 +128,94 @@
       </div>
 
       <div class="btns">
-        <button class="btn primary" id="btnGen">Получить iframe</button>
-        <button class="btn" id="btnCopy">Скопировать</button>
-        <button class="btn" id="btnReset">Сброс</button>
+        <button class="primary" id="gen">Получить iframe</button>
+        <button id="copy">Скопировать</button>
       </div>
 
-      <div class="hint">
-        Предпросмотр ниже — живой калькулятор (без iframe). Кнопка “Получить iframe” генерирует код, который можно вставить в Genially.
-      </div>
+      <div class="hint">Код будет ссылаться на <b>calc.html</b> в твоём репозитории (GitHub Pages). В Genially вставляешь только iframe.</div>
 
       <div style="margin-top:12px">
-        <label>iframe-код для вставки</label>
+        <label>Готовый iframe</label>
         <textarea id="out" spellcheck="false"></textarea>
-        <div class="ok" id="ok">Скопировано ✅</div>
       </div>
     </div>
 
     <div class="panel">
-      <h2>
-        <span>Предпросмотр</span>
-        <span class="badge">0–9, + - * /, Enter, Backspace, Esc</span>
-      </h2>
+      <h2><span>Предпросмотр</span><span class="badge">iframe → calc.html</span></h2>
       <div class="preview">
-        <div id="preview" class="kal"></div>
+        <iframe id="prev" width="360" height="520"></iframe>
       </div>
-      <div class="hint">Настройки применяются сразу.</div>
+      <div class="hint">Если предпросмотр работает тут — он будет работать и в Genially (потому что это тот же src).</div>
     </div>
   </div>
 
 <script>
 (function(){
   const $ = (id)=>document.getElementById(id);
+  const ids = ["frame","frameA","frameBorder","frameBorderA","dispBg","dispBgA","dispText","dispTextA","keyBg","keyBgA","keyText","keyTextA","opBg","opBgA","eqBg","eqBgA","acBg","acBgA","radius","keyRadius","w","h"];
+  const el = Object.fromEntries(ids.map(id=>[id,$(id)]));
+  const prev = $("prev");
+  const out = $("out");
 
-  const els = {
-    cFrame:$("cFrame"), aFrame:$("aFrame"),
-    cFrameBorder:$("cFrameBorder"), aFrameBorder:$("aFrameBorder"),
-    cDispBg:$("cDispBg"), aDispBg:$("aDispBg"),
-    cDispText:$("cDispText"), aDispText:$("aDispText"),
-    cKeyBg:$("cKeyBg"), aKeyBg:$("aKeyBg"),
-    cKeyText:$("cKeyText"), aKeyText:$("aKeyText"),
-    cOpBg:$("cOpBg"), aOpBg:$("aOpBg"),
-    cEqBg:$("cEqBg"), aEqBg:$("aEqBg"),
-    cAcBg:$("cAcBg"), aAcBg:$("aAcBg"),
-    radius:$("radius"), keyRadius:$("keyRadius"),
-    w:$("w"), h:$("h"),
-    out:$("out"), ok:$("ok"),
-    preview:$("preview"),
-    btnGen:$("btnGen"), btnCopy:$("btnCopy"), btnReset:$("btnReset"),
-  };
+  const hex = (v)=>String(v||"").replace("#","");
+  const num = (v, d)=>{ const x=Number(v); return Number.isFinite(x)?x:d; };
 
-  function rgba(hex, a01){
-    const h = hex.replace("#","").trim();
-    const full = h.length===3 ? h.split("").map(x=>x+x).join("") : h;
-    const r = parseInt(full.slice(0,2),16);
-    const g = parseInt(full.slice(2,4),16);
-    const b = parseInt(full.slice(4,6),16);
-    return `rgba(${r},${g},${b},${a01})`;
-  }
-  function n(v, def){
-    const x = Number(v);
-    return Number.isFinite(x) ? x : def;
-  }
-
-  function cfg(){
-    return {
-      frame: rgba(els.cFrame.value, n(els.aFrame.value,16)/100),
-      frameBorder: rgba(els.cFrameBorder.value, n(els.aFrameBorder.value,14)/100),
-      displayBg: rgba(els.cDispBg.value, n(els.aDispBg.value,55)/100),
-      displayText: rgba(els.cDispText.value, n(els.aDispText.value,100)/100),
-      keyBg: rgba(els.cKeyBg.value, n(els.aKeyBg.value,55)/100),
-      keyText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
-      opBg: rgba(els.cOpBg.value, n(els.aOpBg.value,55)/100),
-      opText: rgba(els.cKeyText.value, n(els.aKeyText.value,100)/100),
-      eqBg: rgba(els.cEqBg.value, n(els.aEqBg.value,40)/100),
-      eqText: "#1C1400",
-      acBg: rgba(els.cAcBg.value, n(els.aAcBg.value,35)/100),
-      acText: "#FFF2F0",
-      radius: n(els.radius.value,22) + "px",
-      keyRadius: n(els.keyRadius.value,14) + "px",
-    };
+  function buildCalcUrl(){
+    // ВАЖНО: корректно работает и локально, и на GitHub Pages
+    const url = new URL("calc.html", location.href);
+    url.searchParams.set("frame", hex(el.frame.value));
+    url.searchParams.set("frameA", num(el.frameA.value,16));
+    url.searchParams.set("frameBorder", hex(el.frameBorder.value));
+    url.searchParams.set("frameBorderA", num(el.frameBorderA.value,14));
+    url.searchParams.set("dispBg", hex(el.dispBg.value));
+    url.searchParams.set("dispBgA", num(el.dispBgA.value,55));
+    url.searchParams.set("dispText", hex(el.dispText.value));
+    url.searchParams.set("dispTextA", num(el.dispTextA.value,100));
+    url.searchParams.set("keyBg", hex(el.keyBg.value));
+    url.searchParams.set("keyBgA", num(el.keyBgA.value,55));
+    url.searchParams.set("keyText", hex(el.keyText.value));
+    url.searchParams.set("keyTextA", num(el.keyTextA.value,100));
+    url.searchParams.set("opBg", hex(el.opBg.value));
+    url.searchParams.set("opBgA", num(el.opBgA.value,55));
+    url.searchParams.set("opText", hex(el.keyText.value));
+    url.searchParams.set("opTextA", num(el.keyTextA.value,100));
+    url.searchParams.set("eqBg", hex(el.eqBg.value));
+    url.searchParams.set("eqBgA", num(el.eqBgA.value,40));
+    url.searchParams.set("acBg", hex(el.acBg.value));
+    url.searchParams.set("acBgA", num(el.acBgA.value,35));
+    url.searchParams.set("radius", num(el.radius.value,22));
+    url.searchParams.set("keyRadius", num(el.keyRadius.value,14));
+    return url.toString();
   }
 
-  function applyVars(root, c){
-    root.style.setProperty("--kal-frame", c.frame);
-    root.style.setProperty("--kal-frame-border", c.frameBorder);
-    root.style.setProperty("--kal-display-bg", c.displayBg);
-    root.style.setProperty("--kal-display-text", c.displayText);
-    root.style.setProperty("--kal-key-bg", c.keyBg);
-    root.style.setProperty("--kal-key-text", c.keyText);
-    root.style.setProperty("--kal-op-bg", c.opBg);
-    root.style.setProperty("--kal-op-text", c.opText);
-    root.style.setProperty("--kal-eq-bg", c.eqBg);
-    root.style.setProperty("--kal-eq-text", c.eqText);
-    root.style.setProperty("--kal-ac-bg", c.acBg);
-    root.style.setProperty("--kal-ac-text", c.acText);
-    root.style.setProperty("--kal-radius", c.radius);
-    root.style.setProperty("--kal-key-radius", c.keyRadius);
+  function refresh(){
+    const w = Math.max(240, num(el.w.value,360));
+    const h = Math.max(280, num(el.h.value,520));
+    prev.width = w; prev.height = h;
+    prev.style.width = w+"px"; prev.style.height = h+"px";
+    prev.src = buildCalcUrl();
   }
 
-  function mountCalculator(mount){
-    mount.innerHTML = "";
-    const shell = document.createElement("div");
-    shell.className = "kal-shell";
-    shell.tabIndex = 0;
-
-    const top = document.createElement("div");
-    top.className = "kal-top";
-
-    const display = document.createElement("div");
-    display.className = "kal-display";
-
-    const hist = document.createElement("div");
-    hist.className = "kal-history";
-
-    const val = document.createElement("div");
-    val.className = "kal-value";
-    val.textContent = "0";
-
-    display.appendChild(hist);
-    display.appendChild(val);
-    top.appendChild(display);
-
-    const grid = document.createElement("div");
-    grid.className = "kal-grid";
-
-    const btns = [
-      {t:"AC",k:"AC",c:"ac"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
-      {t:"7",k:"7"},{t:"8",k:"8"},{t:"9",k:"9"},{t:"×",k:"*",c:"op"},
-      {t:"4",k:"4"},{t:"5",k:"5"},{t:"6",k:"6"},{t:"−",k:"-",c:"op"},
-      {t:"1",k:"1"},{t:"2",k:"2"},{t:"3",k:"3"},{t:"=",k:"=",c:"eq"},
-      {t:"0",k:"0",c:"zero"},{t:".",k:"."},{t:"⌫",k:"BKSP",c:"op"},{t:"+",k:"+",c:"op"}
-    ];
-
-    let dv="0", fv=null, op=null, wait=false, lastB=null, lastOp=null, h="";
-
-    function pretty(o){ return o==="/"?"÷":o==="*"?"×":o==="-"?"−":o; }
-    function fmt(num){
-      const s = String(num);
-      if (s.includes("e")||s.includes("E")) return s;
-      return String(Number(num.toFixed(12)));
-    }
-    function comp(a,o,b){
-      if (o==="+") return a+b;
-      if (o==="-") return a-b;
-      if (o==="*") return a*b;
-      if (o==="/") return b===0 ? NaN : a/b;
-      return b;
-    }
-    function upd(){ val.textContent=dv; hist.textContent=h; }
-
-    function digit(d){ if(wait){dv=d;wait=false;} else dv=(dv==="0")?d:dv+d; upd(); }
-    function dot(){ if(wait){dv="0.";wait=false;upd();return;} if(!dv.includes(".")){dv+=".";upd();} }
-    function clear(){ dv="0"; fv=null; op=null; wait=false; lastB=null; lastOp=null; h=""; upd(); }
-    function bk(){ if(wait) return; if(dv.length<=1||(dv.length===2 && dv[0]==="-")) dv="0"; else dv=dv.slice(0,-1); upd(); }
-    function sign(){ if(dv==="0") return; dv = dv[0]==="-" ? dv.slice(1) : ("-"+dv); upd(); }
-    function pct(){ const v=parseFloat(dv); if(!isFinite(v)) return; dv=fmt(v/100); upd(); }
-
-    function setOp(nop){
-      const v=parseFloat(dv);
-      if(!isFinite(v)){ dv="Error"; upd(); return; }
-      if(op && wait){ op=nop; h=fmt(fv)+" "+pretty(op); upd(); return; }
-      if(fv===null) fv=v;
-      else if(op){
-        const r=comp(fv,op,v);
-        if(!isFinite(r)){ dv="Error"; fv=null; op=null; wait=false; h=""; upd(); return; }
-        fv=r; dv=fmt(r);
-      }
-      op=nop; wait=true; lastB=null; lastOp=null; h=fmt(fv)+" "+pretty(op); upd();
-    }
-
-    function eq(){
-      const v=parseFloat(dv);
-      if(fv===null) return;
-
-      if(!op && lastOp && lastB!==null){
-        const r2=comp(fv,lastOp,lastB);
-        if(!isFinite(r2)){ dv="Error"; fv=null; lastOp=null; lastB=null; h=""; upd(); return; }
-        fv=r2; dv=fmt(r2); h=""; upd(); return;
-      }
-      if(!op) return;
-
-      const b = wait ? (lastB!==null ? lastB : fv) : v;
-      const r=comp(fv,op,b);
-      if(!isFinite(r)){ dv="Error"; fv=null; op=null; wait=false; h=""; upd(); return; }
-
-      h = fmt(fv)+" "+pretty(op)+" "+fmt(b)+" =";
-      dv = fmt(r);
-      lastB=b; lastOp=op;
-      fv=r; op=null; wait=true; upd();
-    }
-
-    function act(k){
-      if(dv==="Error" && k!=="AC") clear();
-      if(k>="0"&&k<="9") return digit(k);
-      if(k===".") return dot();
-      if(k==="AC") return clear();
-      if(k==="BKSP") return bk();
-      if(k==="SIGN") return sign();
-      if(k==="PCT") return pct();
-      if(k==="+"||k==="-"||k==="*"||k==="/") return setOp(k);
-      if(k==="=") return eq();
-    }
-
-    shell.appendChild(top);
-    shell.appendChild(grid);
-    mount.appendChild(shell);
-
-    btns.forEach(b=>{
-      const el=document.createElement("button");
-      el.className="kal-btn"+(b.c?(" "+b.c):"");
-      el.type="button";
-      el.textContent=b.t;
-      el.addEventListener("click", ()=>act(b.k));
-      grid.appendChild(el);
-    });
-
-    shell.addEventListener("keydown",(e)=>{
-      const map={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
-      if(e.key>="0"&&e.key<="9"){ e.preventDefault(); act(e.key); return; }
-      if(map[e.key]){ e.preventDefault(); act(map[e.key]); }
-    });
-
-    upd();
-    setTimeout(()=>{ try{ shell.focus(); }catch(e){} }, 60);
+  function buildIframe(){
+    const w = Math.max(240, num(el.w.value,360));
+    const h = Math.max(280, num(el.h.value,520));
+    const src = buildCalcUrl();
+    return `<iframe src="${src}" style="width:${w}px;height:${h}px;border:0;background:transparent" width="${w}" height="${h}"></iframe>`;
   }
 
-  function buildCalculatorHtml(c){
-    // standalone page for iframe src=data:...
-    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-html,body{height:100%;margin:0;background:transparent!important;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-:root{
---kal-frame:${c.frame};--kal-frame-border:${c.frameBorder};
---kal-display-bg:${c.displayBg};--kal-display-text:${c.displayText};
---kal-key-bg:${c.keyBg};--kal-key-text:${c.keyText};
---kal-op-bg:${c.opBg};--kal-op-text:${c.opText};
---kal-ac-bg:${c.acBg};--kal-ac-text:${c.acText};
---kal-eq-bg:${c.eqBg};--kal-eq-text:${c.eqText};
---kal-radius:${c.radius};--kal-key-radius:${c.keyRadius};
-}
-.kal{background:transparent;border-radius:var(--kal-radius);padding:16px;width:320px;box-sizing:border-box;position:relative}
-.kal:before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
-background:radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,.35), transparent 55%),
-radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,.28), transparent 55%),
-radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);z-index:-2}
-.kal-shell{border-radius:var(--kal-radius);background:var(--kal-frame);border:1px solid var(--kal-frame-border);padding:14px;
-box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 18px 60px rgba(0,0,0,.35),0 0 24px rgba(190,90,255,.22);
-backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.kal-top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.kal-display{background:var(--kal-display-bg);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px;overflow:hidden}
-.kal-history{font-size:12px;color:rgba(237,231,255,.65);min-height:16px;text-align:right;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kal-value{font-size:32px;font-weight:900;color:var(--kal-display-text);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kal-btn{border:1px solid rgba(255,255,255,.14);background:var(--kal-key-bg);color:var(--kal-key-text);border-radius:var(--kal-key-radius);
-padding:14px 0;font-weight:900;font-size:16px;cursor:pointer;user-select:none;outline:none}
-.kal-btn:active{transform:translateY(1px);filter:brightness(1.05)}
-.kal-btn.op{background:var(--kal-op-bg);color:var(--kal-op-text)}
-.kal-btn.ac{background:var(--kal-ac-bg);color:var(--kal-ac-text)}
-.kal-btn.eq{background:var(--kal-eq-bg);color:var(--kal-eq-text);grid-row:span 2;display:flex;align-items:center;justify-content:center;padding:0;font-size:18px}
-.kal-btn.zero{grid-column:span 2}
-</style></head><body>
-<div class="kal" id="mount"></div>
-<script>
-(${mountCalculator.toString()})(document.getElementById("mount"));
-</script>
-</body></html>`;
-  }
+  ids.forEach(id=>el[id].addEventListener("input", ()=>{ refresh(); out.value=""; }));
 
-  function toBase64Utf8(str){
-    // unicode-safe base64
-    return btoa(unescape(encodeURIComponent(str)));
-  }
+  $("gen").addEventListener("click", ()=>{ out.value = buildIframe(); });
 
-  function genIframe(){
-    const c = cfg();
-    const w = Math.max(240, n(els.w.value,360));
-    const h = Math.max(280, n(els.h.value,520));
+  $("copy").addEventListener("click", async ()=>{
+    const txt = out.value || buildIframe();
+    out.value = txt;
+    try{ await navigator.clipboard.writeText(txt); alert("Скопировано"); }
+    catch(e){ out.focus(); out.select(); document.execCommand("copy"); alert("Скопировано"); }
+  });
 
-    const html = buildCalculatorHtml(c);
-    const b64 = toBase64Utf8(html);
-
-    const code =
-`<iframe
-  src="data:text/html;base64,${b64}"
-  style="width:${w}px;height:${h}px;border:0;background:transparent;"
-  width="${w}" height="${h}"
-  allow="clipboard-read; clipboard-write"
-  allowtransparency="true">
-</iframe>`;
-
-    els.out.value = code;
-  }
-
-  async function copy(){
-    if(!els.out.value.trim()) genIframe();
-    els.ok.style.display = "none";
-    try{
-      await navigator.clipboard.writeText(els.out.value);
-      els.ok.style.display = "block";
-    }catch(e){
-      els.out.focus(); els.out.select();
-      try{ document.execCommand("copy"); }catch(_){}
-      els.ok.style.display = "block";
-    }
-  }
-
-  function refreshPreview(){
-    els.ok.style.display = "none";
-    const c = cfg();
-    applyVars(els.preview, c);
-    mountCalculator(els.preview);
-  }
-
-  function reset(){
-    els.cFrame.value="#7b4dff"; els.aFrame.value=16;
-    els.cFrameBorder.value="#ffffff"; els.aFrameBorder.value=14;
-    els.cDispBg.value="#140a2d"; els.aDispBg.value=55;
-    els.cDispText.value="#ede7ff"; els.aDispText.value=100;
-    els.cKeyBg.value="#19143c"; els.aKeyBg.value=55;
-    els.cKeyText.value="#ede7ff"; els.aKeyText.value=100;
-    els.cOpBg.value="#1e1455"; els.aOpBg.value=55;
-    els.cEqBg.value="#ffdc5a"; els.aEqBg.value=40;
-    els.cAcBg.value="#ff5a50"; els.aAcBg.value=35;
-    els.radius.value=22; els.keyRadius.value=14;
-    els.w.value=360; els.h.value=520;
-    els.out.value="";
-    els.ok.style.display="none";
-    refreshPreview();
-  }
-
-  [
-    "cFrame","aFrame","cFrameBorder","aFrameBorder","cDispBg","aDispBg","cDispText","aDispText",
-    "cKeyBg","aKeyBg","cKeyText","aKeyText","cOpBg","aOpBg","cEqBg","aEqBg","cAcBg","aAcBg",
-    "radius","keyRadius"
-  ].forEach(id => $(id).addEventListener("input", refreshPreview));
-
-  els.btnGen.addEventListener("click", genIframe);
-  els.btnCopy.addEventListener("click", copy);
-  els.btnReset.addEventListener("click", reset);
-
-  refreshPreview();
+  refresh();
 })();
 </script>
-</body>
-</html>'>
-  </iframe>
 </body>
 </html>
