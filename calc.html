@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kal Calculator</title>
+  <style>
+    html,body{height:100%;margin:0;background:transparent!important}
+    body{
+      display:flex;align-items:center;justify-content:center;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    :root{
+      --kal-frame: rgba(123,77,255,.16);
+      --kal-frame-border: rgba(255,255,255,.14);
+      --kal-display-bg: rgba(20,10,45,.55);
+      --kal-display-text: rgba(237,231,255,1);
+      --kal-key-bg: rgba(25,20,60,.55);
+      --kal-key-text: rgba(237,231,255,1);
+      --kal-op-bg: rgba(30,20,85,.55);
+      --kal-op-text: rgba(237,231,255,1);
+      --kal-ac-bg: rgba(255,90,80,.35);
+      --kal-ac-text: #FFF2F0;
+      --kal-eq-bg: rgba(255,220,90,.40);
+      --kal-eq-text: #1C1400;
+      --kal-radius: 22px;
+      --kal-key-radius: 14px;
+    }
+
+    .kal{background:transparent;border-radius:var(--kal-radius);padding:16px;width:320px;box-sizing:border-box;position:relative}
+    .kal::before{
+      content:"";position:absolute;inset:-2px;border-radius:calc(var(--kal-radius) + 2px);
+      background:
+        radial-gradient(1200px 500px at 10% 0%, rgba(190,90,255,.35), transparent 55%),
+        radial-gradient(900px 500px at 90% 20%, rgba(0,210,255,.28), transparent 55%),
+        radial-gradient(700px 420px at 50% 120%, rgba(255,220,90,.18), transparent 60%);
+      z-index:-2
+    }
+    .shell{
+      border-radius:var(--kal-radius);
+      background:var(--kal-frame);
+      border:1px solid var(--kal-frame-border);
+      padding:14px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 18px 60px rgba(0,0,0,.35),0 0 24px rgba(190,90,255,.22);
+      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+    }
+    .top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+    .display{
+      background:var(--kal-display-bg);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
+      overflow:hidden
+    }
+    .hist{font-size:12px;color:rgba(237,231,255,.65);min-height:16px;text-align:right;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .val{font-size:32px;font-weight:900;color:var(--kal-display-text);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background:var(--kal-key-bg);
+      color:var(--kal-key-text);
+      border-radius:var(--kal-key-radius);
+      padding:14px 0;
+      font-weight:900;
+      font-size:16px;
+      cursor:pointer;
+      user-select:none;
+      outline:none
+    }
+    .btn:active{transform:translateY(1px);filter:brightness(1.05)}
+    .btn.op{background:var(--kal-op-bg);color:var(--kal-op-text)}
+    .btn.ac{background:var(--kal-ac-bg);color:var(--kal-ac-text)}
+    .btn.eq{
+      background:var(--kal-eq-bg);color:var(--kal-eq-text);
+      grid-row:span 2;display:flex;align-items:center;justify-content:center;
+      padding:0;font-size:18px
+    }
+    .btn.zero{grid-column:span 2}
+  </style>
+</head>
+<body>
+  <div class="kal"><div class="shell" id="sh" tabindex="0"></div></div>
+
+<script>
+(function(){
+  // -------- settings from URL --------
+  const p = new URLSearchParams(location.search);
+  const num = (k, d)=>{ const v=Number(p.get(k)); return Number.isFinite(v)?v:d; };
+  const hex = (k, d)=> (p.get(k) || d).replace("#","");
+  const rgba = (h, a01)=>{
+    const hh=h.replace("#",""); const full=hh.length===3?hh.split("").map(x=>x+x).join(""):hh;
+    const r=parseInt(full.slice(0,2),16), g=parseInt(full.slice(2,4),16), b=parseInt(full.slice(4,6),16);
+    return `rgba(${r},${g},${b},${a01})`;
+  };
+
+  const root = document.documentElement.style;
+  root.setProperty("--kal-frame", rgba(hex("frame","7b4dff"), num("frameA",16)/100));
+  root.setProperty("--kal-frame-border", rgba(hex("frameBorder","ffffff"), num("frameBorderA",14)/100));
+  root.setProperty("--kal-display-bg", rgba(hex("dispBg","140a2d"), num("dispBgA",55)/100));
+  root.setProperty("--kal-display-text", rgba(hex("dispText","ede7ff"), num("dispTextA",100)/100));
+  root.setProperty("--kal-key-bg", rgba(hex("keyBg","19143c"), num("keyBgA",55)/100));
+  root.setProperty("--kal-key-text", rgba(hex("keyText","ede7ff"), num("keyTextA",100)/100));
+  root.setProperty("--kal-op-bg", rgba(hex("opBg","1e1455"), num("opBgA",55)/100));
+  root.setProperty("--kal-op-text", rgba(hex("opText","ede7ff"), num("opTextA",100)/100));
+  root.setProperty("--kal-ac-bg", rgba(hex("acBg","ff5a50"), num("acBgA",35)/100));
+  root.setProperty("--kal-eq-bg", rgba(hex("eqBg","ffdc5a"), num("eqBgA",40)/100));
+  root.setProperty("--kal-radius", num("radius",22) + "px");
+  root.setProperty("--kal-key-radius", num("keyRadius",14) + "px");
+
+  // -------- calculator engine --------
+  const sh=document.getElementById("sh");
+  const top=document.createElement("div"); top.className="top";
+  const disp=document.createElement("div"); disp.className="display";
+  const hist=document.createElement("div"); hist.className="hist";
+  const val=document.createElement("div"); val.className="val"; val.textContent="0";
+  disp.appendChild(hist); disp.appendChild(val); top.appendChild(disp);
+
+  const grid=document.createElement("div"); grid.className="grid";
+  const btns=[
+    {t:"AC",k:"AC",c:"ac"},{t:"±",k:"SIGN",c:"op"},{t:"%",k:"PCT",c:"op"},{t:"÷",k:"/",c:"op"},
+    {t:"7",k:"7"},{t:"8",k:"8"},{t:"9",k:"9"},{t:"×",k:"*",c:"op"},
+    {t:"4",k:"4"},{t:"5",k:"5"},{t:"6",k:"6"},{t:"−",k:"-",c:"op"},
+    {t:"1",k:"1"},{t:"2",k:"2"},{t:"3",k:"3"},{t:"=",k:"=",c:"eq"},
+    {t:"0",k:"0",c:"zero"},{t:".",k:"."},{t:"⌫",k:"BKSP",c:"op"},{t:"+",k:"+",c:"op"}
+  ];
+
+  let dv="0", fv=null, op=null, wait=false, lastB=null, lastOp=null, h="";
+  const pretty=(o)=> o==="/"?"÷":o==="*"?"×":o==="-"?"−":o;
+  const fmt=(n)=>{ const s=String(n); if(s.includes("e")||s.includes("E")) return s; return String(Number(n.toFixed(12))); };
+  const comp=(a,o,b)=> o==="+"?a+b:o==="-"?a-b:o==="*"?a*b:o==="/"? (b===0?NaN:a/b) : b;
+
+  function upd(){ val.textContent=dv; hist.textContent=h; }
+  function digit(d){ if(wait){dv=d;wait=false;} else dv=(dv==="0")?d:dv+d; upd(); }
+  function dot(){ if(wait){dv="0.";wait=false;upd();return;} if(!dv.includes(".")){dv+=".";upd();} }
+  function clear(){ dv="0"; fv=null; op=null; wait=false; lastB=null; lastOp=null; h=""; upd(); }
+  function bk(){ if(wait) return; if(dv.length<=1 || (dv.length===2 && dv[0]==="-")) dv="0"; else dv=dv.slice(0,-1); upd(); }
+  function sign(){ if(dv==="0") return; dv=dv[0]==="-"?dv.slice(1):("-"+dv); upd(); }
+  function pct(){ const v=parseFloat(dv); if(!isFinite(v)) return; dv=fmt(v/100); upd(); }
+
+  function setOp(nop){
+    const v=parseFloat(dv); if(!isFinite(v)){ dv="Error"; upd(); return; }
+    if(op && wait){ op=nop; h=fmt(fv)+" "+pretty(op); upd(); return; }
+    if(fv===null) fv=v;
+    else if(op){
+      const r=comp(fv,op,v); if(!isFinite(r)){ dv="Error"; clear(); return; }
+      fv=r; dv=fmt(r);
+    }
+    op=nop; wait=true; lastB=null; lastOp=null; h=fmt(fv)+" "+pretty(op); upd();
+  }
+  function eq(){
+    const v=parseFloat(dv); if(fv===null) return;
+    if(!op && lastOp && lastB!==null){
+      const r2=comp(fv,lastOp,lastB); if(!isFinite(r2)){ dv="Error"; clear(); return; }
+      fv=r2; dv=fmt(r2); h=""; upd(); return;
+    }
+    if(!op) return;
+    const b = wait ? (lastB!==null?lastB:fv) : v;
+    const r=comp(fv,op,b); if(!isFinite(r)){ dv="Error"; clear(); return; }
+    h=fmt(fv)+" "+pretty(op)+" "+fmt(b)+" =";
+    dv=fmt(r);
+    lastB=b; lastOp=op;
+    fv=r; op=null; wait=true; upd();
+  }
+  function act(k){
+    if(dv==="Error" && k!=="AC") clear();
+    if(k>="0"&&k<="9") return digit(k);
+    if(k===".") return dot();
+    if(k==="AC") return clear();
+    if(k==="BKSP") return bk();
+    if(k==="SIGN") return sign();
+    if(k==="PCT") return pct();
+    if(k==="+"||k==="-"||k==="*"||k==="/") return setOp(k);
+    if(k==="=") return eq();
+  }
+
+  sh.appendChild(top); sh.appendChild(grid);
+  btns.forEach(b=>{
+    const el=document.createElement("button");
+    el.className="btn"+(b.c?(" "+b.c):"");
+    el.type="button";
+    el.textContent=b.t;
+    el.addEventListener("click",()=>act(b.k));
+    grid.appendChild(el);
+  });
+
+  sh.addEventListener("keydown",(e)=>{
+    const map={"Enter":"=","=":"=","+":"+","-":"-","*":"*","/":"/",".":".",",":".","Backspace":"BKSP","Escape":"AC"};
+    if(e.key>="0"&&e.key<="9"){ e.preventDefault(); act(e.key); return; }
+    if(map[e.key]){ e.preventDefault(); act(map[e.key]); }
+  });
+
+  upd();
+  setTimeout(()=>{ try{ sh.focus(); }catch(e){} }, 60);
+})();
+</script>
+</body>
+</html>
